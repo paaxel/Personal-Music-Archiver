@@ -1,6 +1,6 @@
 @echo off
 echo ====================================
-echo Music Auto Archiver - Build Script
+echo Personal Music Archiver - Build Script
 echo ====================================
 echo.
 
