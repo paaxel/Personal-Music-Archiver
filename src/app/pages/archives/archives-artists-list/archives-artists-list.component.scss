@@ -1,0 +1,160 @@
+.artists-list-view {
+  .list-header {
+    margin-bottom: 30px;
+
+    h1 {
+      margin: 0 0 10px 0;
+      font-size: 32px;
+      color: #e0e0e0;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 16px;
+      color: #8a8a8a;
+    }
+  }
+
+  .search-box {
+    position: relative;
+    margin-bottom: 30px;
+
+    .search-input {
+      width: 100%;
+      padding: 14px 50px 14px 20px;
+      background: #252526;
+      border: 2px solid #3e3e42;
+      border-radius: 8px;
+      color: #e0e0e0;
+      font-size: 15px;
+      transition: all 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: #007acc;
+        background: #2a2d2e;
+      }
+
+      &::placeholder {
+        color: #6a6a6a;
+      }
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+  }
+}
+
+.loading {
+  text-align: center;
+  padding: 80px 20px;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #3e3e42;
+    border-top-color: #007acc;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: #8a8a8a;
+
+  .empty-icon {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+
+  h2 {
+    margin: 0 0 10px 0;
+    font-size: 24px;
+    color: #e0e0e0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.artists-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 30px 0;
+
+  .pagination-button,
+  .page-number {
+    padding: 10px 18px;
+    background: #252526;
+    color: #e0e0e0;
+    border: 2px solid #3e3e42;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+
+    &:hover:not(:disabled) {
+      background: #2a2d2e;
+      border-color: #007acc;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &.active {
+      background: #007acc;
+      border-color: #007acc;
+      color: white;
+      font-weight: 600;
+    }
+  }
+
+  .pagination-button {
+    margin: 0 5px;
+  }
+}
+
+.results-info {
+  text-align: center;
+  font-size: 14px;
+  color: #8a8a8a;
+  margin-top: 20px;
+}

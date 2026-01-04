@@ -1,0 +1,216 @@
+.plugin-card {
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  transition: all var(--transition-fast);
+  
+  &:hover {
+    border-color: var(--border-secondary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  &.active {
+    border-color: var(--success);
+    background: var(--bg-elevated);
+  }
+
+  &.inactive {
+    border-color: var(--error);
+  }
+}
+
+.plugin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  gap: 1rem;
+}
+
+.plugin-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  
+  h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: var(--text-primary);
+  }
+  
+  .version {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid var(--border-primary);
+  }
+  
+  .active-badge {
+    background: var(--success);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .inactive-badge {
+    background: var(--error);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+}
+
+.plugin-actions-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  
+  .btn-small {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    min-width: auto;
+    white-space: nowrap;
+    
+    &:not(.btn-danger):not(.btn-icon) {
+      min-width: 100px;
+    }
+    
+    &.btn-icon {
+      padding: 0.4rem 0.6rem;
+      font-size: 1rem;
+      line-height: 1;
+      min-width: auto;
+    }
+  }
+}
+
+.plugin-description {
+  margin: 0 0 0.75rem 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.plugin-author {
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  
+  strong {
+    color: var(--text-primary);
+  }
+}
+
+.dependency-status {
+  margin-top: 0.75rem;
+  
+  .status-badge {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    
+    &.status-ok {
+      background: rgba(76, 175, 80, 0.2);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+    
+    &.status-error {
+      background: rgba(244, 67, 54, 0.2);
+      color: var(--error);
+      border: 1px solid var(--error);
+    }
+    
+    &.status-loading {
+      background: rgba(255, 152, 0, 0.2);
+      color: var(--warning);
+      border: 1px solid var(--warning);
+      
+      span {
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+    }
+  }
+  
+  .status-message {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-tertiary);
+    font-style: italic;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.btn-primary, .btn-secondary {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background: var(--accent-primary);
+  color: white;
+  
+  &:hover:not(:disabled) {
+    background: var(--accent-hover);
+  }
+}
+
+.btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  
+  &:hover:not(:disabled) {
+    background: var(--bg-elevated);
+    border-color: var(--accent-primary);
+  }
+}
+
+.btn-danger {
+  background: var(--error);
+  color: white;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  
+  &:hover:not(:disabled) {
+    background: var(--error-dark);
+  }
+}

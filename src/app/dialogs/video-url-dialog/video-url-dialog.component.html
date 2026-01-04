@@ -1,0 +1,40 @@
+<app-dialog-overlay [visible]="visible" (closed)="onCancel()">
+  <div class="dialog-content">
+    <div class="dialog-header">
+      <h2>{{ 'dialogs.videoUrl.title' | translate }}</h2>
+      <button class="close-button" (click)="onCancel()">×</button>
+    </div>
+
+    <div class="dialog-body">
+      <p class="song-name">{{ songName }}</p>
+      
+      <div class="form-group">
+        <label for="video-url">{{ 'dialogs.videoUrl.label' | translate }}</label>
+        <input 
+          id="video-url"
+          type="text" 
+          [(ngModel)]="videoUrl"
+          [placeholder]="'dialogs.videoUrl.placeholder' | translate"
+          class="url-input"
+          (keyup.enter)="onSubmit()"
+        />
+        <p class="error-message" *ngIf="error">{{ error }}</p>
+        <p class="warning" *ngIf="isAlreadyArchived">
+          ⚠️ {{ 'archives.urlChanged' | translate }}
+        </p>
+      </div>
+
+      <p class="hint">{{ 'dialogs.videoUrl.hint' | translate }}</p>
+    </div>
+
+    <div class="dialog-actions">
+      <button class="btn-secondary" (click)="onCancel()">
+        {{ 'dialogs.cancel' | translate }}
+      </button>
+      <button class="btn-primary" (click)="onSubmit()">
+        {{ 'dialogs.save' | translate }}
+      </button>
+    </div>
+  </div>
+</app-dialog-overlay>
+

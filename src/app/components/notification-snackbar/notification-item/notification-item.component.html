@@ -1,0 +1,15 @@
+<div 
+  #notificationElement
+  *ngIf="!closed"
+  class="notification"
+  [class.success]="notification.type === 'success'"
+  [class.info]="notification.type === 'info'"
+  [class.warning]="notification.type === 'warning'"
+  [class.error]="notification.type === 'error'"
+>
+  <span class="notification-icon">{{ getIcon(notification.type) }}</span>
+  <span class="notification-message">
+    {{ notification.translationKey | translateWithParams: notification.params }}
+  </span>
+  <button class="close-button" (click)="close()" aria-label="Close">×</button>
+</div>

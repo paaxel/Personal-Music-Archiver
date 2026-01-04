@@ -1,0 +1,77 @@
+<div class="artists-list-view">
+  <!-- Header -->
+  <div class="list-header">
+    <h1>{{ 'archives.artists' | translate }}</h1>
+    <p class="subtitle">{{ 'archives.artistsSubtitle' | translate }}</p>
+  </div>
+
+  <!-- Search Box -->
+  <div class="search-box">
+    <input 
+      type="text" 
+      [(ngModel)]="searchQuery" 
+      (input)="onSearchChange()"
+      [placeholder]="'archives.searchArtists' | translate"
+      class="search-input"
+    />
+    <span class="search-icon">🔍</span>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>{{ 'archives.loadingArtists' | translate }}</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && displayedArtists.length === 0" class="empty-state">
+    <span class="empty-icon">👤</span>
+    <h2>{{ searchQuery ? ('archives.noArtistsFound' | translate) : ('archives.noArtists' | translate) }}</h2>
+    <p *ngIf="searchQuery">{{ 'archives.tryDifferentSearch' | translate }}</p>
+  </div>
+
+  <!-- Artists Grid -->
+  <div *ngIf="!isLoading && displayedArtists.length > 0" class="artists-grid">
+    <app-artist-card
+      *ngFor="let artistData of displayedArtists"
+      [artistData]="artistData"
+      [showAlbumCount]="true"
+      (cardClick)="onArtistClick($event)"
+    ></app-artist-card>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="!isLoading && totalPages > 1" class="pagination">
+    <button 
+      class="pagination-button" 
+      (click)="previousPage()" 
+      [disabled]="currentPage === 1"
+    >
+      ‹ {{ 'archives.previous' | translate }}
+    </button>
+    
+    <div class="page-numbers">
+      <button 
+        *ngFor="let page of getPageNumbers()" 
+        class="page-number"
+        [class.active]="page === currentPage"
+        (click)="goToPage(page)"
+      >
+        {{ page }}
+      </button>
+    </div>
+    
+    <button 
+      class="pagination-button" 
+      (click)="nextPage()" 
+      [disabled]="currentPage === totalPages"
+    >
+      {{ 'archives.next' | translate }} ›
+    </button>
+  </div>
+
+  <!-- Results Info -->
+  <div *ngIf="!isLoading && totalCount > 0" class="results-info">
+    {{ 'archives.showing' | translate }} {{ getStartIndex() }} - {{ getEndIndex() }} {{ 'archives.of' | translate }} {{ totalCount }} {{ 'archives.artists' | translate }}
+  </div>
+</div>

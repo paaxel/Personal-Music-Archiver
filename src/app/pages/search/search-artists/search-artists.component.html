@@ -1,0 +1,77 @@
+<div class="search-artists-view">
+  <!-- Search Header -->
+  <div class="search-header">
+    <h1>{{ 'search.title' | translate }}</h1>
+    <p class="subtitle">{{ 'search.searchByArtist' | translate }}</p>
+  </div>
+
+  <!-- Search Box -->
+  <div class="search-box">
+    <div 
+      class="search-input-wrapper" 
+      appClickOutside 
+      (clickOutside)="onClickOutsideSearch()"
+    >
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery" 
+        [placeholder]="'search.placeholder' | translate"
+        class="search-input"
+        maxlength="255"
+        (keyup.enter)="onSearch()"
+        (focus)="onInputFocus()"
+      />
+      
+      <!-- Recent Searches Dropdown -->
+      <div *ngIf="showRecentSearches" class="recent-searches-dropdown">
+        <div class="recent-searches-header">
+          <span>{{ 'search.recentSearches' | translate }}</span>
+          <button class="clear-button" (click)="onClearRecentSearches()">
+            {{ 'search.clearHistory' | translate }}
+          </button>
+        </div>
+        <div class="recent-searches-list">
+          <div 
+            *ngFor="let search of recentSearches" 
+            class="recent-search-item"
+            (click)="onRecentSearchClick(search.search_text)"
+          >
+            <span class="search-icon">🔍</span>
+            <span class="search-text">{{ search.search_text }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="search-button" (click)="onSearch()" [disabled]="isLoading">
+      {{ isLoading ? ('search.searching' | translate) : ('search.button' | translate) }}
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>{{ 'search.searchingArtists' | translate }}</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && hasSearched && searchResults.length === 0" class="empty-state">
+    <p>{{ 'search.noResults' | translate }} "{{ searchQuery }}"</p>
+  </div>
+
+  <!-- Artist Results -->
+  <div *ngIf="!isLoading && searchResults.length > 0" class="results-list">
+    <div 
+      *ngFor="let artist of searchResults" 
+      class="artist-card"
+      (click)="onArtistClick(artist)"
+    >
+      <div class="artist-icon">👤</div>
+      <div class="artist-info">
+        <h3 class="artist-name">{{ artist.name }}</h3>
+        <p class="artist-type" *ngIf="artist.type">{{ artist.type }}</p>
+        <p class="artist-disambiguation" *ngIf="artist.disambiguation">{{ artist.disambiguation }}</p>
+      </div>
+      <div class="arrow">›</div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,118 @@
+<div class="download-status-wrapper">
+  <!-- Download Status Button -->
+  <button class="download-status-button" (click)="togglePanel()">
+    <span class="download-icon">📥</span>
+    <span class="download-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+  </button>
+
+  <!-- Download Status Panel -->
+  <div class="download-status-panel" *ngIf="isOpen">
+    <div class="panel-header">
+      <h3>{{ 'notifications.title' | translate }}</h3>
+      <button class="close-button" (click)="closePanel()">✕</button>
+    </div>
+
+    <!-- Download Process Controls -->
+    <div class="download-controls">
+      <div class="control-info">
+        <span class="control-label">{{ 'notifications.archiveProcess' | translate }}</span>
+        <span 
+          class="control-status" 
+          [class.active]="isArchiveProcessActive && !isArchiveProcessStopping()"
+          [class.stopping]="isArchiveProcessStopping()"
+          [class.starting]="isArchiveProcessStarting()"
+          [class.inactive]="!isArchiveProcessActive && !isArchiveProcessStarting() && !hasError()"
+          [class.error]="hasError()"
+        >
+          <span *ngIf="isArchiveProcessStopping()">{{ 'notifications.processStopping' | translate }}</span>
+          <span *ngIf="isArchiveProcessStarting()">{{ 'notifications.processStarting' | translate }}</span>
+          <span *ngIf="!isArchiveProcessStopping() && !isArchiveProcessStarting() && isArchiveProcessActive">{{ 'notifications.processActive' | translate }}</span>
+          <span *ngIf="!isArchiveProcessActive && !isArchiveProcessStarting() && !hasError()">{{ 'notifications.processInactive' | translate }}</span>
+          <span *ngIf="hasError()">{{ 'notifications.processError' | translate }}</span>
+        </span>
+      </div>
+      <button 
+        class="control-btn"
+        [class.stop-btn]="isArchiveProcessActive && !isArchiveProcessStopping()"
+        [class.stopping-btn]="isArchiveProcessStopping()"
+        [class.starting-btn]="isArchiveProcessStarting()"
+        [class.start-btn]="!isArchiveProcessActive && !isArchiveProcessStarting()"
+        [class.error-btn]="hasError()"
+        [disabled]="isTogglingProcess || isArchiveProcessStopping() || isArchiveProcessStarting()"
+        (click)="toggleArchiveProcess()"
+      >
+        <span *ngIf="!isTogglingProcess && !isArchiveProcessStopping() && !isArchiveProcessStarting()">
+          {{ isArchiveProcessActive ? ('notifications.stopProcess' | translate) : ('notifications.startProcess' | translate) }}
+        </span>
+        <span *ngIf="isArchiveProcessStopping()">{{ 'notifications.stoppingProcess' | translate }}</span>
+        <span *ngIf="isArchiveProcessStarting()">{{ 'notifications.startingProcess' | translate }}</span>
+        <span *ngIf="isTogglingProcess && !isArchiveProcessStopping() && !isArchiveProcessStarting()">...</span>
+      </button>
+    </div>
+
+    <!-- Error Message -->
+    <div class="error-message" *ngIf="hasError() && archiveProcessError">
+      <span class="error-icon">⚠️</span>
+      <span class="error-text">{{ ("error." + archiveProcessError.messageKey) | translateWithParams: archiveProcessError.params }}</span>
+    </div>
+
+    <div class="panel-content">
+      <!-- Empty State -->
+      <div *ngIf="notifications.length === 0" class="empty-state">
+        <span class="empty-icon">📥</span>
+        <p>{{ 'notifications.noNotifications' | translate }}</p>
+      </div>
+
+      <!-- Notifications List -->
+      <div *ngIf="notifications.length > 0" class="notifications-list">
+        <div 
+          *ngFor="let notification of notifications" 
+          class="notification-item"
+          [class.archiving]="notification.status === 'archiving'"
+          [class.completed]="notification.status === 'completed'"
+          [class.error]="notification.status === 'error'"
+        >
+          <div class="notification-icon">
+            <span *ngIf="notification.status === 'archiving'">⬇️</span>
+            <span *ngIf="notification.status === 'completed'">✅</span>
+            <span *ngIf="notification.status === 'error'">❌</span>
+          </div>
+          
+          <div class="notification-content">
+            <div class="notification-title">{{ notification.albumName }}</div>
+            <div class="notification-artist">{{ notification.artistName }}</div>
+            
+            <div class="current-song" *ngIf="notification.currentSong && notification.status === 'archiving'">
+              <span class="downloading-icon">⬇️</span> {{ notification.currentSong }}
+            </div>
+            
+            <div class="progress-info">
+              <span class="progress-text">
+                {{ notification.completedTracks }} / {{ notification.totalTracks }} {{ 'notifications.tracksArchived' | translate }}
+              </span>
+              <div class="progress-bar">
+                <div 
+                  class="progress-fill" 
+                  [style.width.%]="getProgressPercentage(notification)"
+                ></div>
+              </div>
+            </div>
+            
+            <div class="notification-status">
+              {{ getStatusText(notification.status) | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-footer" *ngIf="notifications.length > 0">
+      <button class="clear-all-button" (click)="clearAllNotifications()">
+        {{ 'notifications.clearAll' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Backdrop -->
+  <div class="download-status-backdrop" *ngIf="isOpen" (click)="closePanel()"></div>
+</div>

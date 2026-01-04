@@ -1,0 +1,33 @@
+<div class="archives-albums-container">
+  <!-- Breadcrumb Navigation -->
+  <div class="breadcrumb">
+    <span class="breadcrumb-item" (click)="backToArtists()">{{ 'archives.title' | translate }}</span>
+    <span class="breadcrumb-separator">›</span>
+    <span class="breadcrumb-item active">{{ selectedArtist?.name }}</span>
+  </div>
+
+  <!-- Albums View -->
+  <div class="albums-view">
+    <div class="albums-header">
+      <h2>{{ 'archives.albumsBy' | translate }} {{ selectedArtist?.name }}</h2>
+      <div class="header-actions">
+        <span class="albums-count">
+          {{ artistAlbums.length }} {{ artistAlbums.length === 1 ? ('archives.album' | translate) : ('archives.albums' | translate) }}
+        </span>
+        <button class="sort-button" (click)="toggleSort()" *ngIf="artistAlbums.length > 0">
+          <span *ngIf="archivesAlbumsService.sortDescending">↓ {{ 'search.newestFirst' | translate }}</span>
+          <span *ngIf="!archivesAlbumsService.sortDescending">↑ {{ 'search.oldestFirst' | translate }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="albums-grid">
+      <app-album-card
+        *ngFor="let album of artistAlbums"
+        [album]="album"
+        [showStatus]="true"
+        (cardClick)="onAlbumClick($event)"
+      ></app-album-card>
+    </div>
+  </div>
+</div>

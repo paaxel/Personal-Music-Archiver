@@ -1,0 +1,82 @@
+.notification {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 250px;
+  max-width: 400px;
+  pointer-events: auto;
+  animation: slideIn 0.3s ease-out;
+  margin-bottom: 10px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  to {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+}
+
+.notification.success {
+  background: #4caf50;
+  color: white;
+}
+
+.notification.info {
+  background: #2196f3;
+  color: white;
+}
+
+.notification.warning {
+  background: #ff9800;
+  color: white;
+}
+
+.notification.error {
+  background: #f44336;
+  color: white;
+}
+
+.notification-icon {
+  font-size: 18px;
+}
+
+.notification-message {
+  flex: 1;
+  word-break: break-word;
+}
+
+.close-button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
+}

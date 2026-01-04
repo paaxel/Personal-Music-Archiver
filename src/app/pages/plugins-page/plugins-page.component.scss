@@ -1,0 +1,162 @@
+.plugins-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: var(--bg-primary);
+  min-height: 100vh;
+}
+
+.plugins-header {
+  padding: 0 0 2rem;
+  border-bottom: 2px solid var(--border-primary);
+  margin-bottom: 2rem;
+  
+  h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+    color: var(--text-primary);
+  }
+  
+  .description {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1rem;
+  }
+}
+
+.plugins-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.plugin-actions {
+  background: var(--bg-secondary);
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-primary);
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.plugins-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.plugin-info-box {
+  background: var(--bg-tertiary);
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-primary);
+  margin-top: 1rem;
+  
+  strong {
+    color: var(--text-primary);
+    font-size: 1rem;
+  }
+}
+
+.no-plugins {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-primary);
+  
+  p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+  }
+  
+  .hint {
+    font-size: 0.9rem;
+    color: var(--text-tertiary);
+  }
+}
+
+.installation-guide {
+  background: var(--bg-secondary);
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-primary);
+  
+  h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+    color: var(--accent-primary);
+  }
+  
+  ol {
+    margin: 0 0 1rem 0;
+    padding-left: 1.5rem;
+    
+    li {
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  
+  .plugins-directory {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-primary);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    
+    strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--accent-primary);
+    }
+    
+    code {
+      display: block;
+      background: var(--bg-tertiary);
+      padding: 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-primary);
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      word-break: break-all;
+    }
+  }
+}
+
+.btn-primary {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--accent-primary);
+  color: white;
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  &:hover:not(:disabled) {
+    background: var(--accent-hover);
+  }
+}

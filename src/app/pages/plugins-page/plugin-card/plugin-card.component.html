@@ -1,0 +1,69 @@
+<div 
+  class="plugin-card"
+  [class.active]="isActive"
+  [class.inactive]="!isActive"
+>
+  <div class="plugin-header">
+    <div class="plugin-info">
+      <h3>{{ plugin.name }}</h3>
+      <span class="version">v{{ plugin.version }}</span>
+      <span class="active-badge" *ngIf="isActive">
+        ✓ {{ 'plugins.active' | translate }}
+      </span>
+      <span class="inactive-badge" *ngIf="!isActive">
+        ○ {{ 'plugins.inactive' | translate }}
+      </span>
+    </div>
+    <div class="plugin-actions-buttons">
+      <button 
+        *ngIf="!isActive"
+        class="btn-primary btn-small btn-icon"
+        (click)="onActivate()"
+        [title]="'plugins.activate' | translate"
+      >
+        ⏯️
+      </button>
+      <button 
+        *ngIf="isActive"
+        class="btn-secondary btn-small btn-icon"
+        (click)="onDeactivate()"
+        [title]="'plugins.deactivate' | translate"
+      >
+        ⏸️
+      </button>
+      <button 
+        class="btn-danger btn-small btn-icon"
+        (click)="onDelete()"
+        [title]="'plugins.deletePlugin' | translate"
+      >
+        🗑️
+      </button>
+    </div>
+  </div>
+
+  <p class="plugin-description">{{ plugin.description }}</p>
+  
+  <div class="plugin-author" *ngIf="plugin.author">
+    <strong>{{ 'plugins.author' | translate }}:</strong> {{ plugin.author }}
+  </div>
+
+  <!-- Dependency Status - Only show for active plugins -->
+  <div class="dependency-status" *ngIf="dependencyStatus">
+    <div 
+      class="status-badge"
+      [class.status-ok]="dependencyStatus.installed"
+      [class.status-error]="!dependencyStatus.installed"
+    >
+      <span *ngIf="dependencyStatus.installed">✓ {{ 'plugins.depsInstalled' | translate }}</span>
+      <span *ngIf="!dependencyStatus.installed">⚠ {{ 'plugins.depsMissing' | translate }}</span>
+    </div>
+    <p class="status-message" *ngIf="dependencyStatus.message">{{ dependencyStatus.message }}</p>
+  </div>
+  
+  <!-- Loading indicator - Only show for active plugins -->
+  <div class="dependency-status" *ngIf="isActive && !dependencyStatus">
+    <div class="status-badge status-loading">
+      <span>⏳ {{ 'plugins.checkingDeps' | translate }}</span>
+    </div>
+  </div>
+</div>

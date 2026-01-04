@@ -1,0 +1,239 @@
+.search-album-page-container {
+  padding: var(--spacing-4xl);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.breadcrumb {
+  margin-bottom: var(--spacing-3xl);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+
+  .breadcrumb-item {
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+
+    &:hover:not(.active) {
+      color: var(--accent-primary);
+    }
+
+    &.active {
+      color: var(--text-primary);
+      cursor: default;
+    }
+  }
+
+  .breadcrumb-separator {
+    color: var(--text-muted);
+  }
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-5xl) var(--spacing-xl);
+  color: var(--text-tertiary);
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border-primary);
+    border-top-color: var(--accent-primary);
+    border-radius: var(--radius-circle);
+    animation: spin 1s linear infinite;
+    margin-bottom: var(--spacing-md);
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.album-details {
+  animation: fadeIn 0.3s;
+}
+
+.album-header-section {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 40px;
+  padding: 30px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-xl);
+
+  .album-cover {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, var(--bg-elevated), var(--bg-secondary));
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    .cover-icon {
+      font-size: 80px;
+      opacity: 0.3;
+    }
+  }
+
+  .album-header-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    h2 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .album-artist-name {
+      margin: 0;
+      font-size: 15px;
+      color: var(--text-tertiary);
+
+      &.artist-link {
+        color: var(--accent-primary);
+        cursor: pointer;
+        text-decoration: none;
+        transition: color var(--transition-fast);
+        
+        &:hover {
+          color: var(--accent-hover);
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .album-release-date {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+  }
+}
+
+.download-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+  margin-top: 10px;
+  border: 1px solid #4caf50;
+
+  .status-icon {
+    color: #4caf50;
+    font-size: 18px;
+  }
+
+  .status-message {
+    color: #4caf50;
+    font-size: 14px;
+  }
+}
+
+.archive-button {
+  padding: 12px 30px;
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  margin-top: 10px;
+  align-self: flex-start;
+
+  &:hover:not(:disabled) {
+    background: var(--accent-hover);
+  }
+
+  &:disabled {
+    background: transparent;
+    border: 1px solid white;
+    cursor: not-allowed;
+  }
+}
+
+.tracks-section {
+  h3 {
+    margin: 0 0 20px 0;
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  .tracks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .media-title {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    color: var(--text-tertiary);
+    padding: 10px 15px;
+    background: var(--bg-primary);
+    border-radius: var(--radius-md);
+  }
+
+  .track-item {
+    display: grid;
+    grid-template-columns: 50px 1fr 80px;
+    gap: 15px;
+    padding: 12px 15px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+
+    &:hover {
+      background: var(--bg-elevated);
+    }
+
+    .track-number {
+      color: var(--text-tertiary);
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .track-title {
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .track-duration {
+      color: var(--text-tertiary);
+      font-size: 14px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

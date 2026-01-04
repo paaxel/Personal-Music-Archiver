@@ -1,0 +1,228 @@
+.search-artists-view {
+  .search-header {
+    margin-bottom: 30px;
+
+    h1 {
+      margin: 0 0 10px 0;
+      font-size: 32px;
+      color: #e0e0e0;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 16px;
+      color: #8a8a8a;
+    }
+  }
+
+  .search-box {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 40px;
+    max-width: 800px;
+  }
+
+  .search-input-wrapper {
+    flex: 1;
+    position: relative;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 15px 20px;
+    border: 1px solid #3e3e42;
+    background: #252526;
+    color: #e0e0e0;
+    border-radius: 6px;
+    font-size: 16px;
+    outline: none;
+
+    &:focus {
+      border-color: #007acc;
+    }
+
+    &::placeholder {
+      color: #6a6a6a;
+    }
+  }
+
+  .recent-searches-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    right: 0;
+    background: #252526;
+    border: 1px solid #3e3e42;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    max-height: 300px;
+    overflow-y: auto;
+
+    .recent-searches-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 15px;
+      border-bottom: 1px solid #3e3e42;
+      font-size: 13px;
+      color: #8a8a8a;
+      font-weight: 600;
+
+      .clear-button {
+        background: none;
+        border: none;
+        color: #007acc;
+        cursor: pointer;
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: background 0.2s;
+
+        &:hover {
+          background: rgba(0, 122, 204, 0.1);
+        }
+      }
+    }
+
+    .recent-searches-list {
+      .recent-search-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        cursor: pointer;
+        transition: background 0.2s;
+        color: #e0e0e0;
+
+        &:hover {
+          background: #2a2d2e;
+        }
+
+        .search-icon {
+          font-size: 14px;
+          opacity: 0.6;
+        }
+
+        .search-text {
+          flex: 1;
+          font-size: 14px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+
+  .search-button {
+    padding: 15px 40px;
+    background: #007acc;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background 0.2s;
+
+    &:hover:not(:disabled) {
+      background: #005a9e;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.loading,
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #8a8a8a;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #3e3e42;
+    border-top-color: #007acc;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 800px;
+}
+
+.artist-card {
+  background: #252526;
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  &:hover {
+    background: #2a2d2e;
+    border-color: #007acc;
+    transform: translateX(5px);
+  }
+
+  .artist-icon {
+    font-size: 32px;
+    opacity: 0.6;
+  }
+
+  .artist-info {
+    flex: 1;
+    min-width: 0;
+
+    .artist-name {
+      margin: 0 0 4px 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .artist-type {
+      margin: 0;
+      font-size: 13px;
+      color: #8a8a8a;
+      text-transform: capitalize;
+    }
+
+    .artist-disambiguation {
+      margin: 0;
+      font-size: 12px;
+      color: #6a6a6a;
+      font-style: italic;
+    }
+  }
+
+  .arrow {
+    font-size: 24px;
+    color: #6a6a6a;
+  }
+}

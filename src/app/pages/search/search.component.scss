@@ -1,0 +1,32 @@
+.search-container {
+  padding: var(--spacing-4xl);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.breadcrumb {
+  margin-bottom: var(--spacing-3xl);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+
+  .breadcrumb-item {
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+
+    &:hover:not(.active) {
+      color: var(--accent-primary);
+    }
+
+    &.active {
+      color: var(--text-primary);
+      cursor: default;
+    }
+  }
+
+  .breadcrumb-separator {
+    color: var(--text-muted);
+  }
+}

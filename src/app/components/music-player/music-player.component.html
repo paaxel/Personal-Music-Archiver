@@ -1,0 +1,39 @@
+<div class="music-player" *ngIf="isVisible && playbackState">
+  <div class="player-content">
+    <div class="song-info">
+      <div class="song-icon">🎵</div>
+      <div class="song-details">
+        <div class="song-name">{{ playbackState.songName }}</div>
+        <div class="song-artist">{{ playbackState.artistName }} • {{ playbackState.albumName }}</div>
+      </div>
+    </div>
+
+    <div class="player-controls">
+      <button class="control-btn" (click)="togglePlayPause()">
+        <span *ngIf="!playbackState.isPlaying">▶️</span>
+        <span *ngIf="playbackState.isPlaying">⏸️</span>
+      </button>
+      <button class="control-btn" (click)="stop()">⏹️</button>
+      
+      <div class="progress-section">
+        <span class="time-display">{{ formatTime(currentTime) }}</span>
+        <div class="progress-container">
+          <input 
+            type="range" 
+            min="0" 
+            [max]="duration" 
+            [value]="currentTime"
+            (input)="seek($event)"
+            class="progress-slider"
+          />
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" [style.width.%]="getProgressPercentage()"></div>
+          </div>
+        </div>
+        <span class="time-display">{{ formatTime(duration) }}</span>
+      </div>
+    </div>
+
+    <button class="close-btn" (click)="close()">×</button>
+  </div>
+</div>

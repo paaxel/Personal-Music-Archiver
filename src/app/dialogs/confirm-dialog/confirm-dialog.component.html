@@ -1,0 +1,26 @@
+<app-dialog-overlay [visible]="visible" (closed)="onCancel()">
+  <div class="dialog-content confirm-dialog">
+    <div class="dialog-header" [class.danger]="isDangerous">
+      <h2>{{ title }}</h2>
+      <button class="close-button" (click)="onCancel()">×</button>
+    </div>
+
+    <div class="dialog-body">
+      <p class="message">{{ message }}</p>
+      <ng-content></ng-content>
+    </div>
+
+    <div class="dialog-actions">
+      <button class="btn-secondary" (click)="onCancel()">
+        {{ cancelText }}
+      </button>
+      <button 
+        class="btn-primary" 
+        [class.btn-danger]="isDangerous"
+        (click)="onConfirm()"
+      >
+        {{ confirmText }}
+      </button>
+    </div>
+  </div>
+</app-dialog-overlay>

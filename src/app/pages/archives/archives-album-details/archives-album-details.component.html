@@ -1,0 +1,229 @@
+<div class="album-details-view">
+  <div *ngIf="isLoadingSongs" class="loading">
+    <div class="spinner"></div>
+    <p>{{ 'archives.loadingSongs' | translate }}</p>
+  </div>
+
+  <div *ngIf="!isLoadingSongs" class="album-details-content">
+    <!-- Album Header -->
+    <div class="album-header">
+      <div class="album-cover-large">
+        <span class="cover-icon-large">💿</span>
+      </div>
+      <div class="album-info-header">
+        <h2>{{ album.album_name }}</h2>
+        <p class="artist-name artist-link" (click)="onArtistNameClick()">{{ album.artist_name }}</p>
+        <p class="album-year" *ngIf="album.release_year">{{ album.release_year }}</p>
+        <p class="album-stats">
+          {{ getTotalSongsCount() }} tracks • {{ getTotalAlbumDuration() }}
+        </p>
+        <div class="download-progress">
+          <span class="progress-text">
+            {{ getCompletedSongsCount() }} / {{ getTotalSongsCount() }} {{ 'archives.songsArchived' | translate }}
+          </span>
+          <div class="progress-bar">
+            <div 
+              class="progress-fill" 
+              [style.width.%]="(getCompletedSongsCount() / getTotalSongsCount()) * 100"
+            ></div>
+          </div>
+        </div>
+        <span 
+          class="album-status-badge" 
+          [class.complete]="album.archive_status === 'ARCHIVED'"
+          [class.partial]="album.archive_status === 'PARTIALLY_ARCHIVED'"
+        >
+          {{ album.archive_status | archiveStatus }}
+        </span>
+        
+        <!-- Album Actions (Reset & Delete) -->
+        <div class="album-actions">
+          <button 
+            class="reset-album-btn" 
+            (click)="onResetAlbumArchive()"
+            [disabled]="isResetting || isDeleting"
+            [title]="'archives.resetAlbum' | translate"
+            *ngIf="album.archive_status !== 'NOT_ARCHIVED'"
+          >
+            <span *ngIf="!isResetting">🔄 {{ 'archives.resetAlbum' | translate }}</span>
+            <span *ngIf="isResetting">{{ 'archives.resetting' | translate }}...</span>
+          </button>
+          
+          <button 
+            class="delete-album-btn" 
+            (click)="onDeleteAlbum()"
+            [disabled]="isDeleting || isResetting"
+            [title]="'archives.deleteAlbum' | translate"
+          >
+            <span *ngIf="!isDeleting">🗑️ {{ 'archives.deleteAlbum' | translate }}</span>
+            <span *ngIf="isDeleting">{{ 'archives.deleting' | translate }}...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Songs List -->
+    <div class="songs-section">
+      <h3>{{ 'archives.tracks' | translate }}</h3>
+      
+      <div *ngIf="albumSongs.length === 0" class="empty-songs">
+        <p>{{ 'archives.noTracks' | translate }}</p>
+      </div>
+
+      <div *ngIf="albumSongs.length > 0" class="songs-list">
+        <div 
+          *ngFor="let song of albumSongs; let i = index" 
+          class="song-item"
+          [class.downloaded]="song.archive_status === 'ARCHIVED'"
+          [class.partial]="song.archive_status === 'PARTIALLY_ARCHIVED'"
+          [class.not-archived]="song.archive_status === 'NOT_ARCHIVED'"
+          [class.video-not-found]="song.archive_status === 'VIDEO_NOT_FOUND'"
+          [class.archive-failed]="song.archive_status === 'ARCHIVING_FAILURE'"
+        >
+          <span class="song-number">{{ song.track_number || i + 1 }}</span>
+          <div class="song-info">
+            <span class="song-title">
+              {{ song.name }}
+            </span>
+          </div>
+          <span class="song-duration" [title]="getDurationTooltip(song)">
+              <span *ngIf="song.archive_status === 'ARCHIVED'" [ngClass]="{'duration-mismatch' : shouldShowBothDurations(song)}" class="duration-mismatch">
+                {{ getActualDuration(song) }}
+              </span>
+              <span *ngIf="song.archive_status === 'ARCHIVED'"> -- </span>
+              <span>{{ getExpectedDuration(song)}}</span>
+          </span>
+          <div class="song-actions">
+            <!-- Play button - only for archived songs -->
+            <button 
+              class="action-btn play-btn" 
+              (click)="onPlaySong(song)"
+              [title]="'player.play' | translate"
+              *ngIf="song.archive_status === 'ARCHIVED'"
+            >
+              ▶️
+            </button>
+            
+            <!-- Open folder button - only for archived songs -->
+            <button 
+              class="action-btn folder-btn" 
+              (click)="onOpenFolder(song)"
+              [title]="'player.openFolder' | translate"
+              *ngIf="song.archive_status === 'ARCHIVED'"
+            >
+              📁
+            </button>
+            
+            <!-- Delete file button - only for archived songs -->
+            <button 
+              class="action-btn delete-btn" 
+              (click)="onDeleteSongFile(song)"
+              [title]="'archives.deleteSong' | translate"
+              *ngIf="song.archive_status === 'ARCHIVED'"
+            >
+              🗑️
+            </button>
+            
+            <!-- Add URL button - for non-archived songs -->
+            <button 
+              class="action-btn" 
+              [class.has-url]="song.video_url"
+              (click)="onAddVideoUrl(song)"
+              [title]="'archives.addUrl' | translate"
+              *ngIf="song.archive_status !== 'ARCHIVED'"
+            >
+              🔗
+            </button>
+            
+            <!-- Upload file button - for non-archived songs -->
+            <button 
+              class="action-btn" 
+              (click)="onUploadFile(song)"
+              [title]="'archives.uploadFile' | translate"
+              *ngIf="song.archive_status !== 'ARCHIVED'"
+            >
+              📤
+            </button>
+            <span 
+              class="song-status"
+              [class.complete]="song.archive_status === 'ARCHIVED'"
+              [class.partial]="song.archive_status === 'PARTIALLY_ARCHIVED'"
+              [class.not-archived]="song.archive_status === 'NOT_ARCHIVED'"
+              [class.video-not-found]="song.archive_status === 'VIDEO_NOT_FOUND'"
+              [class.archive-failed]="song.archive_status === 'ARCHIVING_FAILURE'"
+            >
+              {{ getArchiveStatusIcon(song.archive_status) }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Dialog -->
+  <app-confirm-dialog
+    [visible]="showDeleteConfirmDialog"
+    [title]="'archives.confirmDelete' | translate"
+    [message]="'archives.confirmDeleteMessage' | translate"
+    [confirmText]="'archives.delete' | translate"
+    [cancelText]="'archives.cancel' | translate"
+    [isDangerous]="true"
+    (confirmed)="confirmDeleteAlbum()"
+    (cancelled)="cancelDeleteAlbum()"
+  >
+    <div class="album-info-box">
+      <strong>{{ album.album_name }}</strong><br>
+      <span>{{ album.artist_name }}</span>
+    </div>
+  </app-confirm-dialog>
+
+  <!-- Delete Song File Confirmation Dialog -->
+  <app-confirm-dialog
+    [visible]="showDeleteSongDialog"
+    [title]="'archives.confirmDeleteSong' | translate"
+    [message]="'archives.confirmDeleteSongMessage' | translate"
+    [confirmText]="'archives.delete' | translate"
+    [cancelText]="'archives.cancel' | translate"
+    [isDangerous]="true"
+    (confirmed)="confirmDeleteSongFile()"
+    (cancelled)="cancelDeleteSongFile()"
+  >
+    <div class="song-info-box">
+      <strong>{{ selectedSong?.name }}</strong><br>
+      <span>{{ 'archives.deleteSongHint' | translate }}</span>
+    </div>
+  </app-confirm-dialog>
+
+  <!-- Reset Album Confirm Dialog -->
+  <app-confirm-dialog
+    [visible]="showResetConfirmDialog"
+    [title]="'archives.confirmReset' | translate"
+    [message]="'archives.confirmResetMessage' | translate"
+    [confirmText]="'archives.reset' | translate"
+    [cancelText]="'archives.cancel' | translate"
+    (confirmed)="confirmResetAlbumArchive()"
+    (cancelled)="cancelResetAlbumArchive()"
+  >
+    <div class="album-info-box">
+      <strong>{{ album.album_name }}</strong><br>
+      <span>{{ album.artist_name }}</span>
+    </div>
+  </app-confirm-dialog>
+
+  <!-- Dialogs -->
+  <app-video-url-dialog
+    [visible]="showVideoUrlDialog"
+    [songName]="selectedSong?.name || ''"
+    [currentVideoUrl]="selectedSong?.video_url || ''"
+    [isAlreadyArchived]="selectedSong?.archive_status === 'ARCHIVED'"
+    (urlSubmitted)="onVideoUrlSubmitted($event)"
+    (cancelled)="onDialogCancelled()"
+  ></app-video-url-dialog>
+
+  <app-file-upload-dialog
+    [visible]="showFileUploadDialog"
+    [songName]="selectedSong?.name || ''"
+    (fileSelected)="onFileUploaded($event)"
+    (cancelled)="onDialogCancelled()"
+  ></app-file-upload-dialog>
+</div>

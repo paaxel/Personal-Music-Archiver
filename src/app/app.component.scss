@@ -1,0 +1,54 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.menu-bar {
+  display: flex;
+  background-color: #252526;
+  border-bottom: 1px solid #3e3e42;
+  padding: 0;
+}
+
+.menu-item {
+  padding: 15px 30px;
+  background: none;
+  border: none;
+  color: #cccccc;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s, color 0.2s;
+  border-bottom: 2px solid transparent;
+
+  &:hover {
+    background-color: #2a2d2e;
+    color: #ffffff;
+  }
+
+  &.active {
+    color: #ffffff;
+    border-bottom-color: #007acc;
+    background-color: #1e1e1e;
+  }
+
+  .menu-icon {
+    font-size: 16px;
+  }
+}
+
+.menu-spacer {
+  flex: 1;
+}
+
+.main-content {
+  flex: 1;
+  background-color: #1e1e1e;
+  overflow-y: auto;
+  position: relative;
+  padding-bottom: 50px;
+}

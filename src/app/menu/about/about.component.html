@@ -1,0 +1,39 @@
+<div class="about-overlay" *ngIf="visible" (click)="close()">
+  <div class="about-dialog" (click)="stopPropagation($event)">
+    <button class="close-button" (click)="close()">x</button>
+    
+    <div class="about-header">
+      <div class="app-icon">🎵</div>
+      <h1>{{ 'about.title' | translate }}</h1>
+      <p class="version">{{ 'app.version' | translate }}</p>
+    </div>
+
+    <div class="about-content">
+      <p class="description">
+        {{ 'about.description' | translate }}
+      </p>
+
+      <div class="features">
+        <h3>{{ 'about.features.title' | translate }}</h3>
+        <ul>
+          <li>{{ 'about.features.search' | translate }}</li>
+          <li>{{ 'about.features.archive' | translate }}</li>
+          <li>{{ 'about.features.track' | translate }}</li>
+          <li>{{ 'about.features.manage' | translate }}</li>
+        </ul>
+      </div>
+
+      <div class="tech-stack">
+        <p><strong>{{ 'about.techStack' | translate }}:</strong> Electron, Angular, SQLite</p>
+      </div>
+
+      <div class="copyright">
+        <p class="license">{{ 'about.license' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="about-footer">
+      <button class="ok-button" (click)="close()">{{ 'about.okButton' | translate }}</button>
+    </div>
+  </div>
+</div>

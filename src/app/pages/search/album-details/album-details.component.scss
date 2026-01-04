@@ -1,0 +1,173 @@
+.album-details {
+  animation: fadeIn 0.3s;
+}
+
+.album-header-section {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 40px;
+  padding: 30px;
+  background: #252526;
+  border-radius: 12px;
+
+  .album-cover {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, #3e3e42, #252526);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .cover-icon {
+      font-size: 80px;
+      opacity: 0.3;
+    }
+  }
+
+  .album-header-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    h2 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .album-artist-name {
+      margin: 0;
+      font-size: 15px;
+      color: #8a8a8a;
+
+      &.artist-link {
+        color: #007acc;
+        cursor: pointer;
+        text-decoration: none;
+        
+        &:hover {
+          color: #1e90ff;
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .album-release-date {
+      margin: 0;
+      font-size: 14px;
+      color: #6a6a6a;
+    }
+  }
+}
+
+.download-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  background: #1e1e1e;
+  border-radius: 6px;
+  border: 2px solid #4caf50;
+
+  .status-icon {
+    color: #4caf50;
+    font-size: 18px;
+  }
+
+  .status-message {
+    color: #4caf50;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+.archive-button {
+  padding: 12px 30px;
+  background: #007acc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: #005a9e;
+  }
+
+  &:disabled {
+    background: transparent;
+    color: #4caf50;
+    border: 2px solid #4caf50;
+    cursor: not-allowed;
+  }
+}
+
+.tracks-section {
+  h3 {
+    margin: 0 0 20px 0;
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  .tracks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .media-title {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    color: #8a8a8a;
+    padding: 10px 15px;
+    background: #1e1e1e;
+    border-radius: 6px;
+  }
+
+  .track-item {
+    display: grid;
+    grid-template-columns: 50px 1fr 80px;
+    gap: 15px;
+    padding: 12px 15px;
+    background: #252526;
+    border-radius: 4px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #2a2d2e;
+    }
+
+    .track-number {
+      color: #8a8a8a;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .track-title {
+      color: #e0e0e0;
+      font-size: 14px;
+    }
+
+    .track-duration {
+      color: #8a8a8a;
+      font-size: 14px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

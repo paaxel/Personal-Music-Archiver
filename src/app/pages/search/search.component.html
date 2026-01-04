@@ -1,0 +1,14 @@
+<div class="search-container">
+  <!-- Artists Search View -->
+  <app-search-artists 
+    *ngIf="!selectedArtist"
+    (artistSelected)="onArtistSelected($event)"
+  ></app-search-artists>
+
+  <!-- Album List View (when artist selected) -->
+  <app-search-album-list 
+    *ngIf="selectedArtist"
+    [artist]="selectedArtist"
+    (backToArtists)="backToArtists()"
+  ></app-search-album-list>
+</div>

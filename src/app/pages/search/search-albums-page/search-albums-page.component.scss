@@ -1,0 +1,227 @@
+.search-albums-page-container {
+  padding: var(--spacing-4xl);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.breadcrumb {
+  margin-bottom: var(--spacing-3xl);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+
+  .breadcrumb-item {
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+
+    &:hover:not(.active) {
+      color: var(--accent-primary);
+    }
+
+    &.active {
+      color: var(--text-primary);
+      cursor: default;
+    }
+  }
+
+  .breadcrumb-separator {
+    color: var(--text-muted);
+  }
+}
+
+.albums-section {
+  animation: fadeIn 0.3s;
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+
+    h2 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .sort-button {
+      padding: 8px 16px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      &:hover {
+        background: var(--bg-elevated);
+        border-color: var(--accent-primary);
+        color: var(--accent-primary);
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+  }
+}
+
+.loading,
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-tertiary);
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border-primary);
+    border-top-color: var(--accent-primary);
+    border-radius: var(--radius-circle);
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.albums-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.album-card {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: 15px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid transparent;
+
+  &:hover {
+    background: var(--bg-elevated);
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+  }
+
+  &.added {
+    border-color: var(--success-text);
+    background: var(--bg-elevated);
+
+    &:hover {
+      border-color: var(--success-text);
+    }
+  }
+
+  .album-placeholder {
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, var(--bg-elevated), var(--bg-secondary));
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+
+    .album-icon {
+      font-size: 48px;
+      opacity: 0.3;
+    }
+  }
+
+  .album-info {
+    .album-title {
+      margin: 0 0 6px 0;
+      font-size: 14px;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      line-clamp: 2;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .album-year {
+      margin: 0 0 10px 0;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .archive-btn {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all var(--transition-fast);
+
+      &:hover:not(:disabled) {
+        background: var(--accent-hover);
+        transform: scale(1.02);
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+      }
+
+      &.archiving {
+        background: var(--warning-bg);
+        color: var(--warning-text);
+
+        .archive-spinner {
+          display: inline-block;
+          width: 12px;
+          height: 12px;
+          border: 2px solid rgba(255, 152, 0, 0.3);
+          border-top-color: var(--warning-text);
+          border-radius: var(--radius-circle);
+          animation: spin 0.8s linear infinite;
+        }
+      }
+
+      &.added {
+        background: transparent;
+        color: #4caf50;
+        border: 2px solid #4caf50;
+        cursor: not-allowed;
+
+        &:hover {
+          background: transparent;
+          transform: none;
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

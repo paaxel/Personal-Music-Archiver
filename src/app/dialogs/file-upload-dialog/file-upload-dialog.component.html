@@ -1,0 +1,58 @@
+<app-dialog-overlay [visible]="visible" (closed)="onCancel()">
+  <div class="dialog-content">
+    <div class="dialog-header">
+      <h2>{{ 'dialogs.fileUpload.title' | translate }}</h2>
+      <button class="close-button" (click)="onCancel()">×</button>
+    </div>
+
+    <div class="dialog-body">
+      <p class="song-name">{{ songName }}</p>
+      
+      <div 
+        class="drop-zone"
+        [class.drag-over]="dragOver"
+        (drop)="onDrop($event)"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+      >
+        <div class="drop-zone-content" *ngIf="!selectedFile">
+          <span class="upload-icon">📁</span>
+          <p class="drop-text">{{ 'dialogs.fileUpload.dropText' | translate }}</p>
+          <p class="or-text">{{ 'dialogs.fileUpload.or' | translate }}</p>
+          <label for="file-input" class="browse-button">
+            {{ 'dialogs.fileUpload.browse' | translate }}
+          </label>
+          <input 
+            id="file-input" 
+            type="file" 
+            accept="audio/mpeg,.mp3" 
+            (change)="onFileSelected($event)"
+            style="display: none;"
+          />
+          <p class="hint">{{ 'dialogs.fileUpload.hint' | translate }}</p>
+        </div>
+
+        <div class="selected-file" *ngIf="selectedFile">
+          <span class="file-icon">🎵</span>
+          <div class="file-info">
+            <p class="file-name">{{ selectedFile.name }}</p>
+            <p class="file-size">{{ formatFileSize(selectedFile.size) }}</p>
+          </div>
+          <button class="remove-button" (click)="selectedFile = null">×</button>
+        </div>
+      </div>
+
+      <p class="error-message" *ngIf="error">{{ error }}</p>
+    </div>
+
+    <div class="dialog-actions">
+      <button class="btn-secondary" (click)="onCancel()">
+        {{ 'dialogs.cancel' | translate }}
+      </button>
+      <button class="btn-primary" (click)="onSubmit()" [disabled]="!selectedFile">
+        {{ 'dialogs.upload' | translate }}
+      </button>
+    </div>
+  </div>
+</app-dialog-overlay>
+

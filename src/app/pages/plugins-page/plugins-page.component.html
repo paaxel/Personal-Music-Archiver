@@ -1,0 +1,112 @@
+<div class="plugins-page">
+  <div class="plugins-header">
+    <h1>{{ 'plugins.title' | translate }}</h1>
+    <p class="description">{{ 'plugins.description' | translate }}</p>
+  </div>
+
+  <div class="plugins-content">
+    <!-- Plugin Actions -->
+    <div class="plugin-actions">
+      <button 
+        class="btn-primary" 
+        (click)="uploadPlugin()"
+        [title]="'plugins.upload' | translate"
+      >
+        📤 {{ 'plugins.upload' | translate }}
+      </button>
+    </div>
+
+    <!-- Plugins List -->
+    <div class="plugins-list">
+      <app-plugin-card
+        *ngIf="plugin"
+        [plugin]="plugin"
+        [isActive]="isActive()"
+        [dependencyStatus]="getDependencyStatus()"
+        (activateClick)="onActivatePluginClick()"
+        (deactivateClick)="onDeactivatePluginClick()"
+        (deleteClick)="onDeletePluginClick()"
+      ></app-plugin-card>
+
+      <div *ngIf="!hasPlugin" class="no-plugins">
+        <p>{{ 'plugins.noPlugins' | translate }}</p>
+        <p class="hint">{{ 'plugins.installHint' | translate }}</p>
+      </div>
+    </div>
+
+    <!-- Installation Instructions -->
+    <div class="installation-guide">
+      <h3>{{ 'plugins.howToInstall' | translate }}</h3>
+      <ol>
+        <li>{{ 'plugins.step1' | translate }}</li>
+        <li>{{ 'plugins.step2Upload' | translate }}</li>
+        <li>{{ 'plugins.step3Upload' | translate }}</li>
+      </ol>
+      
+      <div class="plugins-directory" *ngIf="pluginsDirectory">
+        <strong>{{ 'plugins.directory' | translate }}:</strong>
+        <code>{{ pluginsDirectory }}</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Dialog -->
+  <app-confirm-dialog
+    [visible]="showDeleteConfirmDialog"
+    [title]="'plugins.confirmDelete' | translate"
+    [message]="'plugins.confirmDeleteMessage' | translate"
+    [confirmText]="'plugins.delete' | translate"
+    [cancelText]="'archives.cancel' | translate"
+    [isDangerous]="true"
+    (confirmed)="confirmDeletePlugin()"
+    (cancelled)="cancelDeletePlugin()"
+  >
+    <div class="plugin-info-box" *ngIf="plugin">
+      <strong>{{ plugin.name }}</strong>
+    </div>
+  </app-confirm-dialog>
+
+  <!-- Deactivate Confirmation Dialog -->
+  <app-confirm-dialog
+    [visible]="showDeactivateConfirmDialog"
+    [title]="'plugins.confirmDeactivate' | translate"
+    [message]="'plugins.confirmDeactivateMessage' | translate"
+    [confirmText]="'plugins.deactivate' | translate"
+    [cancelText]="'archives.cancel' | translate"
+    (confirmed)="confirmDeactivatePlugin()"
+    (cancelled)="cancelDeactivatePlugin()"
+  >
+    <div class="plugin-info-box" *ngIf="plugin">
+      <strong>{{ plugin.name }}</strong>
+    </div>
+  </app-confirm-dialog>
+
+  <!-- Activate Confirmation Dialog -->
+  <app-confirm-dialog
+    [visible]="showActivateConfirmDialog"
+    [title]="'plugins.confirmActivate' | translate"
+    [message]="'plugins.confirmActivateMessage' | translate"
+    [confirmText]="'plugins.activate' | translate"
+    [cancelText]="'archives.cancel' | translate"
+    (confirmed)="confirmActivatePlugin()"
+    (cancelled)="closeActivatePluginDialog()"
+  >
+    <div class="plugin-info-box" *ngIf="plugin">
+      <strong>{{ plugin.name }}</strong>
+    </div>
+  </app-confirm-dialog>
+
+  <!-- Upload Blocked Dialog -->
+  <app-confirm-dialog
+    [visible]="showUploadBlockedDialog"
+    [title]="'plugins.uploadBlocked' | translate"
+    [message]="'plugins.uploadBlockedMessage' | translate"
+    [confirmText]="'about.okButton' | translate"
+    (confirmed)="closeUploadBlockedDialog()"
+    (cancelled)="closeUploadBlockedDialog()"
+  >
+    <div class="plugin-info-box hint">
+      {{ 'plugins.uploadBlockedHint' | translate }}
+    </div>
+  </app-confirm-dialog>
+</div>

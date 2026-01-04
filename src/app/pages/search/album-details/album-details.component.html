@@ -1,0 +1,50 @@
+<div class="album-details">
+  <div class="album-content">
+    <div class="album-header-section">
+      <div class="album-cover">
+        <span class="cover-icon">💿</span>
+      </div>
+      <div class="album-header-info">
+        <h2>{{ album.title }}</h2>
+        <p class="album-artist-name artist-link" (click)="onArtistNameClick()">{{ artist.name }}</p>
+        <p class="album-release-date">{{ getReleaseYear() }}</p>
+        
+        <!-- Download Status Message -->
+        <div class="download-status" *ngIf="existingAlbum">
+          <span class="status-icon">✓</span>
+          <span class="status-message">{{ existingAlbum.archive_status | archiveStatusMessage }}</span>
+        </div>
+        
+        <!-- Download Button -->
+        <button
+          class="download-button"
+          [disabled]="!canArchive()"
+          (click)="onArchive()"
+        >
+          <span *ngIf="canArchive()">⬇ {{ 'search.archive' | translate }}</span>
+          <span *ngIf="existingAlbum">{{ 'search.alreadyInLibrary' | translate }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Track List -->
+    <div class="tracks-section">
+      <h3>{{ 'search.tracks' | translate }}</h3>
+      <div class="tracks-list">
+        <div *ngFor="let media of album.media; let i = index" class="media-section">
+          <h4 class="media-title" *ngIf="album.media.length > 1">
+            {{ getMediaTitle(media, i) }}
+          </h4>
+          <div 
+            *ngFor="let track of media.tracks" 
+            class="track-item"
+          >
+            <span class="track-number">{{ track.position }}</span>
+            <span class="track-title">{{ track.title }}</span>
+            <span class="track-duration">{{ getTrackDuration(track.length) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

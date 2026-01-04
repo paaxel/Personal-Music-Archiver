@@ -1,0 +1,75 @@
+<div class="search-album-list-view">
+  <!-- Breadcrumb Navigation -->
+  <div class="breadcrumb">
+    <span class="breadcrumb-item" (click)="onBackToArtists()">{{ 'search.title' | translate }}</span>
+    <span class="breadcrumb-separator">›</span>
+    <span class="breadcrumb-item" [class.active]="!selectedAlbum" (click)="backToAlbums()">{{ artist.name }}</span>
+    <ng-container *ngIf="selectedAlbum">
+      <span class="breadcrumb-separator">›</span>
+      <span class="breadcrumb-item active">{{ selectedAlbum.title }}</span>
+    </ng-container>
+  </div>
+
+  <!-- Albums Grid (when no album selected) -->
+  <div *ngIf="!selectedAlbum" class="albums-section">
+    <div class="section-header">
+      <h2>{{ 'search.albumsBy' | translate }} {{ artist.name }}</h2>
+    </div>
+
+    <div *ngIf="isLoadingAlbums" class="loading">
+      <div class="spinner"></div>
+      <p>{{ 'search.loadingAlbums' | translate }}</p>
+    </div>
+
+    <div *ngIf="!isLoadingAlbums && artistAlbums.length === 0" class="empty-state">
+      <p>{{ 'search.noAlbums' | translate }}</p>
+    </div>
+
+    <div *ngIf="!isLoadingAlbums && artistAlbums.length > 0" class="albums-grid">
+      <div 
+        *ngFor="let album of artistAlbums" 
+        class="album-card"
+        (click)="onAlbumClick(album)"
+      >
+        <div class="album-placeholder">
+          <span class="album-icon">💿</span>
+        </div>
+        <div class="album-info">
+          <h3 class="album-title">{{ album.title }}</h3>
+          <p class="album-year">{{ getReleaseYear(album) }}</p>
+          
+          <button
+            class="archive-btn"
+            [class.archiving]="isAlbumArchiving(album.id)"
+            [class.added]="isAlbumAdded(album.id)"
+            (click)="onArchiveAlbum(album, $event)"
+            [disabled]="isAlbumArchiving(album.id) || isAlbumAdded(album.id)"
+          >
+            <span *ngIf="!isAlbumArchiving(album.id) && !isAlbumAdded(album.id)">⬇ {{ 'search.archiveCard' | translate }}</span>
+            <span *ngIf="isAlbumArchiving(album.id)">
+              <span class="download-spinner"></span>
+              {{ 'search.archivingCard' | translate }}
+            </span>
+            <span *ngIf="isAlbumAdded(album.id)">✓ {{ 'search.albumAddedCard' | translate }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Album Details (when album selected) -->
+  <div *ngIf="selectedAlbum && !isLoadingAlbum">
+    <app-album-details 
+      [album]="selectedAlbum" 
+      [artist]="artist"
+      (back)="backToAlbums()"
+      (backToArtist)="backToArtistFromAlbum()"
+    ></app-album-details>
+  </div>
+
+  <!-- Loading Album Details -->
+  <div *ngIf="isLoadingAlbum" class="loading">
+    <div class="spinner"></div>
+    <p>{{ 'search.loadingAlbum' | translate }}</p>
+  </div>
+</div>

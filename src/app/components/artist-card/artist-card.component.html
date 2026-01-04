@@ -1,0 +1,12 @@
+<div class="artist-card" (click)="onCardClick()">
+  <div class="artist-avatar">
+    <span class="avatar-icon">👤</span>
+  </div>
+  <div class="artist-info">
+    <h3 class="artist-name">{{ artistData.artist.name }}</h3>
+    <p class="album-count" *ngIf="showAlbumCount && artistData.albumCount !== undefined">
+      {{ artistData.albumCount }} {{ artistData.albumCount === 1 ? ('archives.album' | translate) : ('archives.albums' | translate) }}
+    </p>
+  </div>
+  <div class="arrow-icon">›</div>
+</div>

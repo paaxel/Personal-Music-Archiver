@@ -1,0 +1,5 @@
+<div class="dialog-overlay" *ngIf="visible" (click)="onOverlayClick()">
+    <div class="dialog-container" (click)="stopPropagation($event)">
+        <ng-content></ng-content>
+    </div>
+</div>

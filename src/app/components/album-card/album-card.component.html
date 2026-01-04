@@ -1,0 +1,23 @@
+<div 
+  class="album-card"
+  [class.complete-card]="album.archive_status === 'ARCHIVED'"
+  (click)="onCardClick()"
+>
+  <div class="album-cover">
+    <span class="album-icon">💿</span>
+  </div>
+  <div class="album-details">
+    <h3 class="album-name" [title]="album.album_name">{{ album.album_name }}</h3>
+    <p class="album-year" *ngIf="album.release_year">{{ album.release_year }}</p>
+    <span 
+      *ngIf="showStatus"
+      class="status-badge" 
+      [class.complete]="album.archive_status === 'ARCHIVED'"
+      [class.partial]="album.archive_status === 'PARTIALLY_ARCHIVED'"
+      [class.not-archived]="album.archive_status === 'NOT_ARCHIVED'"
+    >
+      <span class="status-icon">{{ getStatusIcon(album.archive_status) }}</span>
+      <span class="status-text">{{ album.archive_status | archiveStatusShort }}</span>
+    </span>
+  </div>
+</div>

@@ -1,0 +1,492 @@
+.album-details-view {
+  animation: fadeIn var(--transition-normal);
+}
+
+.album-header {
+  display: flex;
+  gap: var(--spacing-3xl);
+  margin-bottom: var(--spacing-4xl);
+  padding: var(--spacing-3xl);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-xl);
+
+  .album-cover-large {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, var(--bg-elevated), var(--bg-secondary));
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    .cover-icon-large {
+      font-size: 80px;
+      opacity: 0.3;
+    }
+  }
+
+  .album-info-header {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+
+    h2 {
+      margin: 0;
+      font-size: 28px;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .artist-name {
+      margin: 0;
+      font-size: 15px;
+      color: var(--text-tertiary);
+
+      &.artist-link {
+        color: var(--accent-primary);
+        cursor: pointer;
+        text-decoration: none;
+        transition: color var(--transition-fast);
+        
+        &:hover {
+          color: var(--accent-hover);
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .album-year {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .album-stats {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .download-progress {
+      margin-top: var(--spacing-sm);
+
+      .progress-text {
+        display: block;
+        font-size: 14px;
+        color: var(--text-tertiary);
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .progress-bar {
+        height: 8px;
+        background: var(--border-primary);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+
+        .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, var(--accent-primary), var(--accent-active));
+          transition: width 0.3s;
+          border-radius: var(--radius-sm);
+        }
+      }
+    }
+
+    .album-status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-elevated);
+      color: white;
+      text-transform: uppercase;
+      font-weight: 500;
+      align-self: flex-start;
+
+      &.complete {
+        background: var(--success);
+      }
+
+      &.partial {
+        background: var(--warning);
+      }
+    }
+
+    .album-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      align-items: center;
+    }
+
+    .reset-album-btn {
+      padding: 10px 20px;
+      background: var(--info);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all var(--transition-fast);
+
+      &:hover:not(:disabled) {
+        background: #1976d2;
+        transform: translateY(-1px);
+      }
+
+      &:disabled {
+        background: #555;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+    }
+
+    .delete-album-btn {
+      padding: 10px 20px;
+      background: var(--error-dark);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all var(--transition-fast);
+
+      &:hover:not(:disabled) {
+        background: var(--error-darker);
+        transform: translateY(-1px);
+      }
+
+      &:disabled {
+        background: #555;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+    }
+  }
+}
+
+.songs-section {
+  h3 {
+    margin: 0 0 var(--spacing-xl) 0;
+    font-size: 20px;
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .empty-songs {
+    text-align: center;
+    padding: var(--spacing-4xl);
+    color: var(--text-tertiary);
+  }
+
+  .songs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .song-item {
+    display: grid;
+    grid-template-columns: 50px 1fr 120px 180px;
+    gap: 15px;
+    align-items: center;
+    padding: var(--spacing-md) 15px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+
+    &:hover {
+      background: var(--bg-tertiary);
+    }
+
+    &.downloaded {
+      border-left: 3px solid var(--success);
+    }
+
+    &.partial {
+      border-left: 3px solid var(--warning);
+    }
+
+    &.not-archived {
+      border-left: 3px solid var(--border-primary);
+    }
+
+    &.video-not-found {
+      border-left: 3px solid var(--warning);
+      background: rgba(255, 152, 0, 0.1);
+    }
+
+    &.archive-failed {
+      border-left: 3px solid var(--error);
+      background: rgba(244, 67, 54, 0.1);
+    }
+
+    .song-number {
+      color: var(--text-tertiary);
+      font-size: 14px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .song-info {
+      overflow: hidden;
+    }
+
+    .song-title {
+      color: var(--text-primary);
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: block;
+    }
+
+    .song-duration {
+      color: var(--text-tertiary);
+      font-size: 14px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+
+      span.duration-mismatch {
+        color: crimson;
+        font-weight: 500;
+      }
+    }
+
+    .song-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      justify-content: flex-end;
+
+      .action-btn {
+        background: none;
+        border: 1px solid var(--border-primary);
+        padding: 4px 8px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 16px;
+        transition: all var(--transition-fast);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          border-color: var(--accent-primary);
+          background-color: rgba(0, 122, 204, 0.1);
+        }
+
+        &.play-btn {
+          border-color: var(--success);
+          
+          &:hover {
+            border-color: var(--success-hover);
+            background-color: rgba(76, 175, 80, 0.1);
+          }
+        }
+
+        &.folder-btn {
+          border-color: var(--warning);
+          
+          &:hover {
+            border-color: var(--warning-hover);
+            background-color: rgba(255, 152, 0, 0.1);
+          }
+        }
+
+        &.delete-btn:hover {
+          border-color: var(--error-dark);
+          background-color: rgba(211, 47, 47, 0.1);
+        }
+
+        &.has-url {
+          border-color: var(--success);
+          
+          &:hover {
+            border-color: var(--success-hover);
+            background-color: rgba(76, 175, 80, 0.1);
+          }
+        }
+      }
+
+      .song-status {
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+
+        &.complete {
+          color: var(--success);
+        }
+
+        &.partial {
+          color: var(--warning);
+        }
+
+        &.not-archived {
+          color: var(--text-tertiary);
+        }
+
+        &.video-not-found {
+          color: var(--warning);
+        }
+
+        &.archive-failed {
+          color: var(--error);
+        }
+      }
+    }
+  }
+}
+
+// Delete confirmation dialog
+.delete-confirm-dialog {
+  max-width: 500px;
+
+  h3 {
+    color: var(--error-dark);
+    margin: 0 0 15px 0;
+    font-size: 20px;
+  }
+
+  p {
+    margin: 0 0 15px 0;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .album-info {
+    padding: 15px;
+    background: #2a2a2a;
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-xl);
+
+    strong {
+      color: white;
+      font-size: 16px;
+    }
+
+    span {
+      color: #999999;
+      font-size: 14px;
+    }
+  }
+
+  .dialog-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+
+    button {
+      padding: 10px 24px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-cancel {
+      background: #555;
+      color: white;
+
+      &:hover {
+        background: #666;
+      }
+    }
+
+    .btn-delete {
+      background: var(--error-dark);
+      color: white;
+
+      &:hover {
+        background: var(--error-darker);
+      }
+    }
+  }
+}
+
+// Album info box for new confirm dialog
+.album-info-box {
+  padding: 15px;
+  background: #2a2a2a;
+  border-radius: var(--radius-md);
+  margin-top: var(--spacing-sm);
+  border-left: 3px solid var(--error-dark);
+
+  strong {
+    color: white;
+    font-size: 16px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  span {
+    color: #999999;
+    font-size: 14px;
+  }
+}
+
+// Song info box for delete song dialog
+.song-info-box {
+  padding: 15px;
+  background: #2a2a2a;
+  border-radius: var(--radius-md);
+  margin-top: var(--spacing-sm);
+  border-left: 3px solid var(--error-dark);
+
+  strong {
+    color: white;
+    font-size: 16px;
+    display: block;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  span {
+    color: #999999;
+    font-size: 14px;
+  }
+}
+
+.loading {
+  text-align: center;
+  padding: 80px var(--spacing-xl);
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border-primary);
+    border-top-color: var(--accent-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+    color: var(--text-tertiary);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

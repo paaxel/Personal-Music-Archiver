@@ -1,0 +1,102 @@
+.confirm-dialog {
+  width: 500px;
+  max-width: 90vw;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #3e3e42;
+
+  &.danger {
+    border-bottom-color: #d32f2f;
+    
+    h2 {
+      color: #f44336;
+    }
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #e0e0e0;
+  }
+
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #8a8a8a;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #e0e0e0;
+    }
+  }
+}
+
+.dialog-body {
+  padding: 24px;
+
+  .message {
+    margin: 0 0 16px 0;
+    color: #cccccc;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #3e3e42;
+
+  button {
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+
+  .btn-secondary {
+    background: #3e3e42;
+    color: #e0e0e0;
+
+    &:hover {
+      background: #4a4a4e;
+    }
+  }
+
+  .btn-primary {
+    background: #007acc;
+    color: white;
+
+    &:hover {
+      background: #005a9e;
+    }
+  }
+
+  .btn-danger {
+    background: #d32f2f;
+    color: white;
+
+    &:hover {
+      background: #b71c1c;
+    }
+  }
+}

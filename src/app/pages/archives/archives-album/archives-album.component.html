@@ -1,0 +1,18 @@
+<div class="archives-album-container">
+  <!-- Breadcrumb Navigation -->
+  <div class="breadcrumb" *ngIf="selectedAlbum">
+    <span class="breadcrumb-item" (click)="backToArtists()">{{ 'archives.title' | translate }}</span>
+    <span class="breadcrumb-separator">›</span>
+    <span class="breadcrumb-item" (click)="backToAlbums()">{{ selectedAlbum.artist_name }}</span>
+    <span class="breadcrumb-separator">›</span>
+    <span class="breadcrumb-item active">{{ selectedAlbum.album_name }}</span>
+  </div>
+
+  <!-- Album Details -->
+  <app-archives-album-details
+    *ngIf="selectedAlbum"
+    [album]="selectedAlbum"
+    (albumDeleted)="onAlbumDeleted($event)"
+    (backToArtist)="backToAlbums()"
+  ></app-archives-album-details>
+</div>

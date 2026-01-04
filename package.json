@@ -1,0 +1,128 @@
+{
+  "name": "personal-music-archive",
+  "version": "0.1.2",
+  "description": "An archiving, extensible music tool compatible with Plex",
+  "author": "Paaxel",
+  "main": "dist/electron/main.js",
+  "scripts": {
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "electron": "npm run build && npm run electron:build &&electron .",
+    "electron:build": "tsc -p electron-src",
+    "electron:start": "npm run electron:build && electron .",
+    "electron:dev": "concurrently \"ng serve\" \"wait-on http://localhost:4200 && npm run electron:start\"",
+    "postinstall": "npm run rebuild",
+    "rebuild": "electron-rebuild -f -w better-sqlite3",
+    "pack": "npm run build && npm run electron:build && electron-builder --dir",
+    "dist": "npm run build && npm run electron:build && electron-builder",
+    "dist:win": "npm run build && npm run electron:build && electron-builder --win nsis",
+    "dist:mac": "npm run build && npm run electron:build && electron-builder --mac",
+    "dist:linux": "npm run build && npm run electron:build && electron-builder --linux"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "packageManager": "npm@10.9.4",
+  "dependencies": {
+    "@angular/animations": "^21.0.6",
+    "@angular/common": "^21.0.0",
+    "@angular/compiler": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "@angular/forms": "^21.0.0",
+    "@angular/platform-browser": "^21.0.0",
+    "@angular/platform-browser-dynamic": "^21.0.6",
+    "@angular/router": "^21.0.0",
+    "@ngx-translate/core": "^17.0.0",
+    "@ngx-translate/http-loader": "^17.0.0",
+    "axios": "^1.13.2",
+    "better-sqlite3": "^12.5.0",
+    "music-metadata": "^11.10.3",
+    "node-id3": "^0.2.9",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "^0.16.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^21.0.4",
+    "@angular/cli": "^21.0.4",
+    "@angular/compiler-cli": "^21.0.0",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^25.0.3",
+    "concurrently": "^9.2.1",
+    "electron": "^39.2.7",
+    "electron-builder": "^26.0.12",
+    "electron-rebuild": "^3.2.9",
+    "jsdom": "^27.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.9.2",
+    "vitest": "^4.0.8",
+    "wait-on": "^9.0.3"
+  },
+  "build": {
+    "appId": "com.musicautoarchiver.app",
+    "productName": "Personal Music Archiver",
+    "directories": {
+      "output": "release",
+      "buildResources": "resources"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "node_modules/better-sqlite3/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "resources",
+        "to": ".",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "resources/icon.ico"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": "resources/icon.icns",
+      "category": "public.app-category.music"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "resources/icon.png",
+      "category": "Audio"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": true,
+      "installerIcon": "resources/icon.ico",
+      "uninstallerIcon": "resources/icon.ico"
+    }
+  }
+}

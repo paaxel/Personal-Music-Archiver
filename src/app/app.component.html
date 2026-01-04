@@ -1,0 +1,48 @@
+<div class="app-container">
+  <div class="menu-bar">
+    <button class="menu-item" routerLink="/search" routerLinkActive="active">
+      <span class="menu-icon">🔍</span>
+      <span>{{ 'menu.search' | translate }}</span>
+    </button>
+    <button class="menu-item" routerLink="/archives" routerLinkActive="active">
+      <span class="menu-icon">📥</span>
+      <span>{{ 'menu.archives' | translate }}</span>
+    </button>
+    
+    <!-- Archive Status Panel -->
+    <div class="menu-spacer"></div>
+    <app-archive-status-panel></app-archive-status-panel>
+  </div>
+
+  <div class="main-content">
+    <router-outlet></router-outlet>
+  </div>
+
+  <!-- Music Player -->
+  <app-music-player></app-music-player>
+
+  <!-- Notification Snackbar -->
+  <app-notification-snackbar></app-notification-snackbar>
+
+  <!-- Global Loading Spinner -->
+  <app-loading-spinner></app-loading-spinner>
+
+  <app-about></app-about>
+  <app-language-selector></app-language-selector>
+
+
+
+    <!-- Close app Confirmation Dialog -->
+  <app-confirm-dialog
+    [visible]="showCloseAppConfirmDialog"
+    [title]="'menu.confirmCloseAppTitle' | translate"
+    [message]="'menu.confirmCloseAppMessage' | translate"
+    [confirmText]="'menu.ok' | translate"
+    [cancelText]="'menu.no' | translate"
+    [isDangerous]="true"
+    (confirmed)="executeCloseApp()"
+    (cancelled)="cancelCloseApp()"
+  >
+  </app-confirm-dialog>
+
+</div>

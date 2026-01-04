@@ -1,0 +1,61 @@
+.artist-card {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  &:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-accent-sm);
+  }
+
+  .artist-avatar {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--bg-elevated), var(--bg-secondary));
+    border-radius: var(--radius-circle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    .avatar-icon {
+      font-size: 32px;
+      opacity: 0.4;
+    }
+  }
+
+  .artist-info {
+    flex: 1;
+    min-width: 0;
+
+    .artist-name {
+      margin: 0 0 6px 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .album-count {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-tertiary);
+    }
+  }
+
+  .arrow-icon {
+    font-size: 24px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+}

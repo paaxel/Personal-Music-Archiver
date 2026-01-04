@@ -1,0 +1,270 @@
+@use 'sass:color';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+// ============================================
+// COLOR PALETTE
+// ============================================
+
+// Background Colors
+$bg-primary: #1e1e1e;
+$bg-secondary: #252526;
+$bg-tertiary: #2a2d2e;
+$bg-elevated: #3e3e42;
+$bg-dark: #2a2a2a;
+
+// Text Colors
+$text-primary: #e0e0e0;
+$text-secondary: #cccccc;
+$text-tertiary: #8a8a8a;
+$text-muted: #6a6a6a;
+$text-darker: #5a5a5a;
+
+// Border Colors
+$border-primary: #3e3e42;
+$border-hover: #4a4a4e;
+
+// Accent Colors
+$accent-primary: #007acc;
+$accent-hover: #005a9e;
+$accent-active: #1e90ff;
+
+// Status Colors
+$success: #4caf50;
+$success-hover: #66bb6a;
+$success-dark: #388e3c;
+$success-light: #45a049;
+
+$warning: #ff9800;
+$warning-hover: #ffa726;
+
+$error: #f44336;
+$error-hover: #ef5350;
+$error-dark: #d32f2f;
+$error-darker: #b71c1c;
+
+$info: #2196f3;
+
+// Neutral Colors
+$neutral-gray: #555;
+$neutral-dark: #2d2d30;
+
+// Overlay/Modal
+$overlay-bg: rgba(0, 0, 0, 0.7);
+
+// Shadows
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+$shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.3);
+$shadow-xl: 0 8px 32px rgba(0, 0, 0, 0.5);
+$shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+
+// Accent shadows
+$shadow-accent: 0 8px 24px rgba(0, 122, 204, 0.3);
+$shadow-accent-sm: 0 4px 12px rgba(0, 122, 204, 0.2);
+$shadow-success: 0 8px 24px rgba(76, 175, 80, 0.3);
+$shadow-player: 0 -2px 10px rgba(0, 0, 0, 0.3);
+
+// ============================================
+// SPACING & SIZING
+// ============================================
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 12px;
+$spacing-lg: 16px;
+$spacing-xl: 20px;
+$spacing-2xl: 24px;
+$spacing-3xl: 30px;
+$spacing-4xl: 40px;
+$spacing-5xl: 60px;
+
+// Border Radius
+$radius-sm: 4px;
+$radius-md: 6px;
+$radius-lg: 8px;
+$radius-xl: 12px;
+$radius-circle: 50%;
+
+// ============================================
+// TRANSITIONS
+// ============================================
+$transition-fast: 0.2s;
+$transition-normal: 0.3s;
+
+// ============================================
+// CSS CUSTOM PROPERTIES (for runtime use)
+// ============================================
+:root {
+  // Backgrounds
+  --bg-primary: #{$bg-primary};
+  --bg-secondary: #{$bg-secondary};
+  --bg-tertiary: #{$bg-tertiary};
+  --bg-elevated: #{$bg-elevated};
+  --bg-dark: #{$bg-dark};
+  
+  // Text
+  --text-primary: #{$text-primary};
+  --text-secondary: #{$text-secondary};
+  --text-tertiary: #{$text-tertiary};
+  --text-muted: #{$text-muted};
+  --text-darker: #{$text-darker};
+  
+  // Borders
+  --border-primary: #{$border-primary};
+  --border-hover: #{$border-hover};
+  
+  // Accents
+  --accent-primary: #{$accent-primary};
+  --accent-hover: #{$accent-hover};
+  --accent-active: #{$accent-active};
+  
+  // Status
+  --success: #{$success};
+  --success-hover: #{$success-hover};
+  --success-dark: #{$success-dark};
+  --success-light: #{$success-light};
+  --warning: #{$warning};
+  --warning-hover: #{$warning-hover};
+  --error: #{$error};
+  --error-hover: #{$error-hover};
+  --error-dark: #{$error-dark};
+  --error-darker: #{$error-darker};
+  --info: #{$info};
+  
+  // Neutral
+  --neutral-gray: #{$neutral-gray};
+  --neutral-dark: #{$neutral-dark};
+  
+  // Spacing
+  --spacing-xs: #{$spacing-xs};
+  --spacing-sm: #{$spacing-sm};
+  --spacing-md: #{$spacing-md};
+  --spacing-lg: #{$spacing-lg};
+  --spacing-xl: #{$spacing-xl};
+  --spacing-2xl: #{$spacing-2xl};
+  --spacing-3xl: #{$spacing-3xl};
+  --spacing-4xl: #{$spacing-4xl};
+  --spacing-5xl: #{$spacing-5xl};
+  
+  // Radius
+  --radius-sm: #{$radius-sm};
+  --radius-md: #{$radius-md};
+  --radius-lg: #{$radius-lg};
+  --radius-xl: #{$radius-xl};
+  --radius-circle: #{$radius-circle};
+  
+  // Transitions
+  --transition-fast: #{$transition-fast};
+  --transition-normal: #{$transition-normal};
+  
+  // Shadows
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+  --shadow-xl: #{$shadow-xl};
+  --shadow-inset: #{$shadow-inset};
+  --shadow-accent: #{$shadow-accent};
+  --shadow-accent-sm: #{$shadow-accent-sm};
+  --shadow-success: #{$shadow-success};
+  --shadow-player: #{$shadow-player};
+  
+  // Overlay
+  --overlay-bg: #{$overlay-bg};
+}
+
+// ============================================
+// GLOBAL STYLES
+// ============================================
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: $bg-primary;
+  color: $text-primary;
+  overflow: hidden;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+// ============================================
+// SCROLLBAR STYLES
+// ============================================
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: $bg-primary;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $border-primary;
+  border-radius: 5px;
+  
+  &:hover {
+    background: $border-hover;
+  }
+}
+
+// ============================================
+// UTILITY ANIMATIONS
+// ============================================
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ============================================
+// UTILITY CLASSES
+// ============================================
+
+.fade-in {
+  animation: fadeIn $transition-normal;
+}
+
+.slide-up {
+  animation: slideUp $transition-normal ease-out;
+}
+
+.slide-down {
+  animation: slideDown $transition-fast ease;
+}

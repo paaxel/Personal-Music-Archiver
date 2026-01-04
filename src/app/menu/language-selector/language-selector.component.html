@@ -1,0 +1,28 @@
+<div class="language-overlay" *ngIf="visible" (click)="close()">
+  <div class="language-dialog" (click)="$event.stopPropagation()">
+    <button class="close-button" (click)="close()">×</button>
+    
+    <div class="language-header">
+      <div class="language-icon">🌐</div>
+      <h1>{{ 'language.select' | translate }}</h1>
+      <p class="current-language">
+        {{ 'language.current' | translate }}: {{ getCurrentLanguageName() }}
+      </p>
+    </div>
+
+    <div class="language-content">
+      <div class="language-list">
+        <button
+          *ngFor="let lang of languages"
+          class="language-option"
+          [class.active]="currentLanguage === lang.code"
+          (click)="selectLanguage(lang.code)"
+        >
+          <span class="language-flag">{{ lang.flag }}</span>
+          <span class="language-name">{{ lang.name }}</span>
+          <span class="language-check" *ngIf="currentLanguage === lang.code">✓</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
