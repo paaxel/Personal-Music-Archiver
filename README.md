@@ -141,20 +141,15 @@ module.exports = MyMusicPlugin;
 
 #### Creating a Plugin: Step by Step
 
-1. **Create a new JavaScript file** in the plugins directory (e.g., `my-plugin.js`)
+1. **Create a new JavaScript file** (e.g., `my-plugin.js`)
 
 2. **Implement the plugin class** with all required methods
 
-3. **Place the plugin file** in the appropriate directory:
-   - **Windows**: `C:\Users\<username>\AppData\Roaming\music-auto-archiver\plugins`
-   - **macOS**: `~/Library/Application Support/music-auto-archiver/plugins`
-   - **Linux**: `~/.config/music-auto-archiver/plugins`
+3. **Open the app** 
 
-4. **Test your plugin**:
-   - Open Personal Music Archiver → Help → Plugins
-   - Click "Reload Plugin"
-   - Activate your plugin
-   - Try archiving a test album
+4. **Open Personal Music Archiver → Help → Archive Plugins**
+
+4. **Upload plugin js file and activate it**
 
 #### Plugin Best Practices
 
