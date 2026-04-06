@@ -4,16 +4,22 @@
       <div class="song-icon">🎵</div>
       <div class="song-details">
         <div class="song-name">{{ playbackState.songName }}</div>
-        <div class="song-artist">{{ playbackState.artistName }} • {{ playbackState.albumName }}</div>
+        <div class="song-artist">
+          <span class="clickable-link" (click)="navigateToArtist()">{{ playbackState.artistName }}</span>
+          <span> • </span>
+          <span class="clickable-link" (click)="navigateToAlbum()">{{ playbackState.albumName }}</span>
+        </div>
       </div>
     </div>
 
     <div class="player-controls">
+      <button class="control-btn" (click)="playPrevious()" [disabled]="!hasPrevious" [title]="'player.previous' | translate">⏮️</button>
       <button class="control-btn" (click)="togglePlayPause()">
         <span *ngIf="!playbackState.isPlaying">▶️</span>
         <span *ngIf="playbackState.isPlaying">⏸️</span>
       </button>
       <button class="control-btn" (click)="stop()">⏹️</button>
+      <button class="control-btn" (click)="playNext()" [disabled]="!hasNext" [title]="'player.next' | translate">⏭️</button>
       
       <div class="progress-section">
         <span class="time-display">{{ formatTime(currentTime) }}</span>

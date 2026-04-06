@@ -2,6 +2,13 @@ import { ipcMain, contextBridge, ipcRenderer } from 'electron';
 import axios from 'axios';
 import { NotificationManager } from './notification-manager';
 
+/** Configurable options for filtering release-group results */
+export interface ReleaseGroupSearchOptions {
+  primaryTypes: string[];       // e.g. ['Album', 'Single', 'EP']
+  excludeSecondaryTypes: string[]; // e.g. ['Live', 'Compilation']
+  status: string;               // e.g. 'Official'
+}
+
 /**
  * Manager for MusicBrainz API calls
  * Handles API requests from the main process to avoid CORS issues
@@ -40,20 +47,64 @@ export class MusicBrainzManager {
   }
 
   /**
+   * Build the Lucene query string for release-group search from configurable options.
+   * Defaults to official albums excluding live and compilation if no options provided.
+   */
+  private static buildReleaseGroupQuery(artistId: string, options?: ReleaseGroupSearchOptions): string {
+    const defaults: ReleaseGroupSearchOptions = {
+      primaryTypes: ['Album'],
+      excludeSecondaryTypes: ['Live', 'Compilation'],
+      status: 'Official'
+    };
+
+    const config = options || defaults;
+    const parts: string[] = [`arid:${artistId}`];
+
+    // Include primary types (OR logic: Album OR Single OR EP)
+    if (config.primaryTypes.length > 0) {
+      if (config.primaryTypes.length === 1) {
+        parts.push(`primarytype:${config.primaryTypes[0]}`);
+      } else {
+        const typeConditions = config.primaryTypes.map(t => `primarytype:${t}`).join(' OR ');
+        parts.push(`(${typeConditions})`);
+      }
+    }
+
+    // Include status filter
+    if (config.status) {
+      parts.push(`status:${config.status}`);
+    }
+
+    // Exclude secondary types
+    for (const excludeType of config.excludeSecondaryTypes) {
+      parts.push(`NOT secondarytype:${excludeType}`);
+    }
+
+    return parts.join(' AND ');
+  }
+
+  /**
    * Configure IPC handlers for MusicBrainz API calls
    */
   static configureMusicBrainzIpcHandlers(): void {
     ipcMain.handle('mb-search-artist', async (_event, artistName: string, limit: number = 10) => {
+      // Split name into tokens and search with AND to match regardless of name/surname order
+      const tokens = artistName.trim().split(/\s+/).filter(t => t.length > 0);
+      const query = tokens.length > 1
+        ? tokens.map(t => `artist:"${t}"`).join(' AND ')
+        : `artist:"${artistName}"`;
+
       return this.makeRequest('/artist', {
-        query: `artist:"${artistName}"`,
+        query,
         fmt: 'json',
         limit: limit.toString()
       });
     });
 
-    ipcMain.handle('mb-get-albums-by-artist', async (_event, artistId: string, limit: number = 100) => {
+    ipcMain.handle('mb-get-albums-by-artist', async (_event, artistId: string, limit: number = 100, options?: ReleaseGroupSearchOptions) => {
+      const query = this.buildReleaseGroupQuery(artistId, options);
       return this.makeRequest('/release-group', {
-        query: `arid:${artistId} AND primarytype:Album AND status:Official AND NOT secondarytype:Live AND NOT secondarytype:Compilation`,
+        query,
         fmt: 'json',
         limit: limit.toString()
       });
@@ -85,8 +136,8 @@ export class MusicBrainzManager {
       searchArtist: (artistName: string, limit?: number) => 
         ipcRenderer.invoke('mb-search-artist', artistName, limit),
       
-      getAlbumsByArtist: (artistId: string, limit?: number) => 
-        ipcRenderer.invoke('mb-get-albums-by-artist', artistId, limit),
+      getAlbumsByArtist: (artistId: string, limit?: number, options?: ReleaseGroupSearchOptions) => 
+        ipcRenderer.invoke('mb-get-albums-by-artist', artistId, limit, options),
       
       getAlbumDetails: (albumId: string) => 
         ipcRenderer.invoke('mb-get-album-details', albumId),

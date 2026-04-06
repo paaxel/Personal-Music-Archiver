@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { SearchAlbumsService } from '../../../services/search-albums.service';
+import { SearchAlbumsService, AVAILABLE_PRIMARY_TYPES, AVAILABLE_SECONDARY_TYPES } from '../../../services/search-albums.service';
 import { MusicbrainzService } from '../../../services/musicbrainz.service';
 import { DatabaseService } from '../../../services/database.service';
 import { LoaderService } from '../../../services/loader.service';
@@ -18,6 +18,10 @@ import { Album, Song, ArchiveStatus } from '../../../services/models/database.mo
 })
 export class SearchAlbumsPageComponent implements OnInit, OnDestroy {
   archivingAlbums: Set<string> = new Set();
+  showSearchFilters: boolean = false;
+
+  readonly availablePrimaryTypes = AVAILABLE_PRIMARY_TYPES;
+  readonly availableSecondaryTypes = AVAILABLE_SECONDARY_TYPES;
 
   constructor(
     private router: Router,
@@ -170,6 +174,53 @@ export class SearchAlbumsPageComponent implements OnInit, OnDestroy {
 
   isAlbumAdded(albumId: string): boolean {
     return this.searchAlbumsService.existingAlbums.has(albumId);
+  }
+
+  toggleSearchFilters(): void {
+    this.showSearchFilters = !this.showSearchFilters;
+  }
+
+  isPrimaryTypeSelected(type: string): boolean {
+    return this.searchAlbumsService.searchOptions.primaryTypes.includes(type);
+  }
+
+  isSecondaryTypeExcluded(type: string): boolean {
+    return this.searchAlbumsService.searchOptions.excludeSecondaryTypes.includes(type);
+  }
+
+  togglePrimaryType(type: string): void {
+    const types = this.searchAlbumsService.searchOptions.primaryTypes;
+    const index = types.indexOf(type);
+    if (index >= 0) {
+      types.splice(index, 1);
+    } else {
+      types.push(type);
+    }
+  }
+
+  toggleExcludeSecondaryType(type: string): void {
+    const types = this.searchAlbumsService.searchOptions.excludeSecondaryTypes;
+    const index = types.indexOf(type);
+    if (index >= 0) {
+      types.splice(index, 1);
+    } else {
+      types.push(type);
+    }
+  }
+
+  applySearchFilters(): void {
+    this.loaderService.show();
+    this.searchAlbumsService.updateSearchOptionsAndReload(this.searchAlbumsService.searchOptions).subscribe({
+      next: () => {
+        this.loaderService.hide();
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error applying search filters:', error);
+        this.loaderService.hide();
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   getReleaseYear(album: MusicBrainzAlbum): string {

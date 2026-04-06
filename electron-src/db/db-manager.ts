@@ -585,13 +585,22 @@ export class DatabaseManager {
 
     /**
      * Update song video URL (public method for DownloadManager)
+     * Pass null to remove the video URL
      */
-    updateSongVideoUrl(songId: number, videoUrl: string): void {
+    updateSongVideoUrl(songId: number, videoUrl: string | null): void {
         // Get the current song state
         const song = this.getSongById(songId);
 
         if (!song) {
             console.error('Song not found:', songId);
+            return;
+        }
+
+        // Handle URL removal
+        if (videoUrl === null) {
+            console.debug("Removing video URL for song " + songId);
+            const stmt = this.db.prepare('UPDATE Song SET video_url = NULL WHERE id = ?');
+            stmt.run(songId);
             return;
         }
 

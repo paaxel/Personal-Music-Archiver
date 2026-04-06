@@ -36,7 +36,11 @@
     "recentSearches": "Recent Searches",
     "clearHistory": "Clear",
     "newestFirst": "Newest First",
-    "oldestFirst": "Oldest First"
+    "oldestFirst": "Oldest First",
+    "filters": "Filters",
+    "releaseTypes": "Include release types",
+    "excludeTypes": "Exclude secondary types",
+    "applyFilters": "Apply Filters"
   },
   "archives": {
     "title": "Archived Albums",
@@ -88,6 +92,8 @@
     "play": "Play",
     "pause": "Pause",
     "stop": "Stop",
+    "next": "Next Track",
+    "previous": "Previous Track",
     "openFolder": "Open Folder",
     "nowPlaying": "Now Playing"
   },
@@ -120,7 +126,8 @@
       "title": "Add Video URL",
       "label": "Video URL",
       "placeholder": "https://www.example.com/video/...",
-      "hint": "Enter the video URL for this song (YouTube, Vimeo, etc.)"
+      "hint": "Enter the video URL for this song (YouTube, Vimeo, etc.)",
+      "removeUrl": "Remove URL"
     },
     "fileUpload": {
       "title": "Upload MP3 File",
@@ -206,6 +213,7 @@
     "upload_failed": "Upload failed",
     "invalid_file": "Invalid file",
     "archive_failed": "Archive failed",
+    "archive_error_rate_exceeded": "Archive process stopped: too many errors in a short period. Check your plugin or song URLs.",
     "plugin_install_failed": "Failed to install plugin",
     "plugin_delete_failed": "Failed to delete plugin",
     "plugin_deactivation_failed": "Failed to deactivate plugin",

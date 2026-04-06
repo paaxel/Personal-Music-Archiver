@@ -217,6 +217,7 @@
     [currentVideoUrl]="selectedSong?.video_url || ''"
     [isAlreadyArchived]="selectedSong?.archive_status === 'ARCHIVED'"
     (urlSubmitted)="onVideoUrlSubmitted($event)"
+    (urlRemoved)="onVideoUrlRemoved()"
     (cancelled)="onDialogCancelled()"
   ></app-video-url-dialog>
 

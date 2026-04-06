@@ -255,11 +255,16 @@ export class ArchivesAlbumDetailsComponent implements OnInit, OnDestroy {
         const filePath = await window.electronFileAPI.getFilePath(song.archived_file);
         
         if (filePath) {
+          // Set album songs for next/prev navigation
+          this.playerService.setAlbumSongs(this.albumSongs);
+
           await this.playerService.playSong(
             song.id!,
             song.name,
             this.album.artist_name,
             this.album.album_name,
+            this.album.album_id,
+            this.album.artist_id,
             filePath
           );
         } else {
@@ -359,6 +364,24 @@ export class ArchivesAlbumDetailsComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error updating video URL:', error);
+          this.cdr.detectChanges();
+        }
+      });
+    }
+    this.showVideoUrlDialog = false;
+    this.selectedSong = null;
+  }
+
+  onVideoUrlRemoved(): void {
+    if (this.selectedSong && this.selectedSong.id) {
+      this.dbService.updateSongVideoUrl(this.selectedSong.id, null).subscribe({
+        next: () => {
+          console.debug('Video URL removed successfully');
+          this.loadSongsAndAlbumStatus();
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error removing video URL:', error);
           this.cdr.detectChanges();
         }
       });

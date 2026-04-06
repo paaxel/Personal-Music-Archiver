@@ -46,6 +46,29 @@
       font-weight: 600;
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .filter-button {
+      padding: 8px 16px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all var(--transition-fast);
+
+      &:hover, &.active {
+        background: var(--bg-elevated);
+        border-color: var(--accent-primary);
+        color: var(--accent-primary);
+      }
+    }
+
     .sort-button {
       padding: 8px 16px;
       background: var(--bg-secondary);
@@ -77,6 +100,80 @@
   text-align: center;
   padding: 60px 20px;
   color: var(--text-tertiary);
+}
+
+.search-filters {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+  animation: fadeIn 0.2s ease-out;
+
+  .filter-group {
+    margin-bottom: var(--spacing-lg);
+
+    &:last-of-type {
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .filter-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+
+      .filter-chip {
+        padding: 6px 14px;
+        background: var(--bg-primary);
+        color: var(--text-tertiary);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--radius-lg);
+        cursor: pointer;
+        font-size: 13px;
+        transition: all var(--transition-fast);
+
+        &:hover {
+          border-color: var(--accent-primary);
+          color: var(--text-primary);
+        }
+
+        &.selected {
+          background: var(--accent-primary);
+          color: white;
+          border-color: var(--accent-primary);
+        }
+
+        &.exclude.selected {
+          background: var(--error-hover);
+          border-color: var(--error-hover);
+        }
+      }
+    }
+  }
+
+  .apply-filters-btn {
+    padding: 8px 20px;
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+
+    &:hover {
+      background: var(--accent-hover);
+    }
+  }
 }
 
 .loading {

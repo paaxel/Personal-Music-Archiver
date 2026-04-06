@@ -6,6 +6,20 @@ import { MusicbrainzService } from './musicbrainz.service';
 import { DatabaseService } from './database.service';
 import { MusicBrainzArtist, MusicBrainzAlbum } from './models/musicbranz.model';
 import { ResetableService } from '../resolvers/base/resetable-service.interface';
+import { ReleaseGroupSearchOptions } from '../electron.d';
+
+/** Available MusicBrainz primary types for release-group filtering */
+export const AVAILABLE_PRIMARY_TYPES = ['Album', 'Single', 'EP', 'Broadcast', 'Other'] as const;
+
+/** Available MusicBrainz secondary types that can be excluded */
+export const AVAILABLE_SECONDARY_TYPES = ['Live', 'Compilation', 'Soundtrack', 'Remix', 'DJ-mix', 'Mixtape/Street'] as const;
+
+/** Default search options matching original behavior */
+export const DEFAULT_SEARCH_OPTIONS: ReleaseGroupSearchOptions = {
+  primaryTypes: ['Album'],
+  excludeSecondaryTypes: ['Live', 'Compilation'],
+  status: 'Official'
+};
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +32,7 @@ export class SearchAlbumsService implements ResetableService {
   artistAlbums: MusicBrainzAlbum[] = [];
   existingAlbums: Set<string> = new Set();
   sortDescending: boolean = true; // newest first by default
+  searchOptions: ReleaseGroupSearchOptions = { ...DEFAULT_SEARCH_OPTIONS };
   
   private artistId: string | null = null;
 
@@ -38,6 +53,7 @@ export class SearchAlbumsService implements ResetableService {
     this.existingAlbums = new Set();
     this.artistId = null;
     this.sortDescending = true;
+    this.searchOptions = { ...DEFAULT_SEARCH_OPTIONS };
   }
 
   areDataLoaded(): boolean {
@@ -87,7 +103,7 @@ export class SearchAlbumsService implements ResetableService {
   }
 
   private loadAlbumsCall(): Observable<boolean> {
-    return this.musicBrainzService.getAlbumsByArtist(this.artistId!).pipe(
+    return this.musicBrainzService.getAlbumsByArtist(this.artistId!, 100, this.searchOptions).pipe(
       map((result) => {
         this.artistAlbums = result['release-groups'] || [];
         
@@ -162,5 +178,24 @@ export class SearchAlbumsService implements ResetableService {
 
   reloadAlbums(): Observable<boolean> {
     return this.loadAlbumsCall();
+  }
+
+  /** Update search options and reload albums with the new filter configuration */
+  updateSearchOptionsAndReload(options: ReleaseGroupSearchOptions): Observable<boolean> {
+    this.searchOptions = { ...options };
+    return new Observable((observer) => {
+      this.loadAlbumsCall().subscribe({
+        next: () => {
+          this.checkExistingAlbums().subscribe({
+            next: () => {
+              observer.next(true);
+              observer.complete();
+            },
+            error: (error) => observer.error(error)
+          });
+        },
+        error: (error) => observer.error(error)
+      });
+    });
   }
 }

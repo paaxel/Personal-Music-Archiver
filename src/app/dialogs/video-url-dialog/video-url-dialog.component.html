@@ -28,6 +28,10 @@
     </div>
 
     <div class="dialog-actions">
+      <button class="btn-danger" *ngIf="hasExistingUrl" (click)="onRemoveUrl()">
+        {{ 'dialogs.videoUrl.removeUrl' | translate }}
+      </button>
+      <div class="actions-spacer"></div>
       <button class="btn-secondary" (click)="onCancel()">
         {{ 'dialogs.cancel' | translate }}
       </button>

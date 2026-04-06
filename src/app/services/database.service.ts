@@ -52,7 +52,7 @@ export class DatabaseService {
     return from(window.electronDbAPI.addSongsBatch(songs));
   }
 
-  updateSongVideoUrl(songId: number, videoUrl: string): Observable<void> {
+  updateSongVideoUrl(songId: number, videoUrl: string | null): Observable<void> {
     return from(window.electronDbAPI.updateSongVideoUrl(songId, videoUrl));
   }
 

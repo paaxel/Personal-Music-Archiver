@@ -113,6 +113,12 @@ export interface DependencyCheck {
   message?: string;
 }
 
+export interface ReleaseGroupSearchOptions {
+  primaryTypes: string[];
+  excludeSecondaryTypes: string[];
+  status: string;
+}
+
 declare global {
   interface Window {
     electronMenuAPI: {      
@@ -134,7 +140,7 @@ declare global {
       addArtist: (artist: Artist) => Promise<number>;
       addSong: (song: Song) => Promise<number>;
       addSongsBatch: (songs: Song[]) => Promise<number[]>;
-      updateSongVideoUrl: (songId: number, videoUrl: string) => Promise<void>;
+      updateSongVideoUrl: (songId: number, videoUrl: string | null) => Promise<void>;
       uploadSongFile: (songId: number, file: File, artistName: string, albumName: string, trackNumber: number, songName: string) => Promise<void>;
       deleteSongFile: (songId: number) => Promise<{ success: boolean }>;
       getSongFile: (songId: number) => Promise<{ buffer: ArrayBuffer; path: string }>;
@@ -175,7 +181,7 @@ declare global {
 
     electronMusicBrainzAPI: {
       searchArtist: (artistName: string, limit?: number) => Promise<any>;
-      getAlbumsByArtist: (artistId: string, limit?: number) => Promise<any>;
+      getAlbumsByArtist: (artistId: string, limit?: number, options?: ReleaseGroupSearchOptions) => Promise<any>;
       getAlbumDetails: (albumId: string) => Promise<any>;
       getReleasesForReleaseGroup: (releaseGroupId: string) => Promise<any>;
     };
