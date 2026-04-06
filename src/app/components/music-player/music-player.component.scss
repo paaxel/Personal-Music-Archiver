@@ -58,6 +58,16 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+
+      .clickable-link {
+        cursor: pointer;
+        transition: color var(--transition-fast);
+
+        &:hover {
+          color: var(--accent-primary);
+          text-decoration: underline;
+        }
+      }
     }
   }
 }
@@ -82,6 +92,15 @@
 
     &:hover {
       background: rgba(255, 255, 255, 0.1);
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+
+      &:hover {
+        background: none;
+      }
     }
   }
 

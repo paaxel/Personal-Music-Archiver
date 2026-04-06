@@ -4,7 +4,7 @@ import { map, catchError, switchMap } from 'rxjs/operators';
 import { Params, Router } from '@angular/router';
 import { MusicbrainzService } from './musicbrainz.service';
 import { DatabaseService } from './database.service';
-import { MusicBrainzAlbumDetails, MusicBrainzArtist } from './models/musicbranz.model';
+import { MusicBrainzAlbumDetails, MusicBrainzArtist, MusicBrainzRelease } from './models/musicbranz.model';
 import { Album } from './models/database.model';
 import { ResetableService } from '../resolvers/base/resetable-service.interface';
 
@@ -19,6 +19,11 @@ export class SearchAlbumService implements ResetableService {
   artist: MusicBrainzArtist | null = null;
   releaseGroupId: string = '';
   existingAlbum: Album | null = null;
+
+  /** All available releases (editions) for the current release group */
+  availableReleases: MusicBrainzRelease[] = [];
+  /** Index of the currently selected release */
+  selectedReleaseIndex: number = 0;
   
   constructor(
     private musicBrainzService: MusicbrainzService,
@@ -36,6 +41,8 @@ export class SearchAlbumService implements ResetableService {
     this.artist = null;
     this.releaseGroupId = '';
     this.existingAlbum = null;
+    this.availableReleases = [];
+    this.selectedReleaseIndex = 0;
   }
 
   areDataLoaded(): boolean {
@@ -83,12 +90,29 @@ export class SearchAlbumService implements ResetableService {
         if (!releases || releases.length === 0) {
           throw new Error('No releases found for this album');
         }
-        return this.musicBrainzService.getAlbumDetails(releases[0].id);
+        this.availableReleases = releases;
+        return this.loadSelectedRelease();
       }),
+      catchError((err) => {
+        return throwError(() => err);
+      })
+    );
+  }
+
+  /**
+   * Load the currently selected release's details and check its archive status.
+   */
+  private loadSelectedRelease(): Observable<boolean> {
+    const selectedRelease = this.availableReleases[this.selectedReleaseIndex];
+    return this.musicBrainzService.getAlbumDetails(selectedRelease.id).pipe(
       switchMap((albumDetails) => {
-        this.album = { ...albumDetails, releaseGroupId: this.releaseGroupId };
+        this.album = { 
+          ...albumDetails, 
+          releaseGroupId: this.releaseGroupId,
+          disambiguation: selectedRelease.disambiguation || albumDetails.disambiguation || ''
+        };
         
-        // Extract artist info
+        // Extract artist info from album credits
         if (this.album && this.album['artist-credit'] && this.album['artist-credit'].length > 0) {
           const artistCredit = this.album['artist-credit'][0];
           this.artist = {
@@ -100,16 +124,28 @@ export class SearchAlbumService implements ResetableService {
           };
         }
         
-        return this.dbService.checkAlbumByReleaseGroup(this.releaseGroupId);
+        // Check if this specific release is already archived (by release ID)
+        return this.dbService.checkAlbumExists(selectedRelease.id);
       }),
       map((existingAlbum) => {
         this.existingAlbum = existingAlbum;
         return true;
-      }),
-      catchError((err) => {
-        return throwError(() => err);
       })
     );
+  }
+
+  /** Switch to a different release edition and reload its details */
+  selectRelease(index: number): Observable<boolean> {
+    if (index < 0 || index >= this.availableReleases.length) {
+      return of(false);
+    }
+    this.selectedReleaseIndex = index;
+    return this.loadSelectedRelease();
+  }
+
+  /** Check if there are multiple editions available */
+  hasMultipleEditions(): boolean {
+    return this.availableReleases.length > 1;
   }
 
   reloadAlbum(): Observable<boolean> {

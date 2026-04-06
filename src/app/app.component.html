@@ -1,10 +1,10 @@
 <div class="app-container">
   <div class="menu-bar">
-    <button class="menu-item" routerLink="/search" routerLinkActive="active">
+    <button class="menu-item" (click)="navigateToSearch()" [class.active]="isSearchActive()">
       <span class="menu-icon">🔍</span>
       <span>{{ 'menu.search' | translate }}</span>
     </button>
-    <button class="menu-item" routerLink="/archives" routerLinkActive="active">
+    <button class="menu-item" (click)="navigateToArchives()" [class.active]="isArchivesActive()">
       <span class="menu-icon">📥</span>
       <span>{{ 'menu.archives' | translate }}</span>
     </button>

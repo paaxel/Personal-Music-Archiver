@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { MusicPlayerService, PlaybackState } from '../../services/music-player.service';
 import { Subscription } from 'rxjs';
@@ -19,7 +20,11 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   
   private subscription?: Subscription;
 
-  constructor(private playerService: MusicPlayerService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private playerService: MusicPlayerService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.subscription = this.playerService.playbackState$.subscribe(state => {
@@ -65,6 +70,34 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
 
   close(): void {
     this.playerService.stop();
+  }
+
+  navigateToAlbum(): void {
+    if (this.playbackState?.albumId) {
+      this.router.navigate(['/archives/album', this.playbackState.albumId]);
+    }
+  }
+
+  navigateToArtist(): void {
+    if (this.playbackState?.artistId) {
+      this.router.navigate(['/archives/albums', this.playbackState.artistId]);
+    }
+  }
+
+  async playNext(): Promise<void> {
+    await this.playerService.playNext();
+  }
+
+  async playPrevious(): Promise<void> {
+    await this.playerService.playPrevious();
+  }
+
+  get hasNext(): boolean {
+    return this.playerService.hasNext();
+  }
+
+  get hasPrevious(): boolean {
+    return this.playerService.hasPrevious();
   }
 
   formatTime(seconds: number): string {

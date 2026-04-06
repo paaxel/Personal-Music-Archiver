@@ -5,7 +5,7 @@ import * as path from 'path';
 /**
  * Current schema version
  */
-const CURRENT_SCHEMA_VERSION = 1;
+const CURRENT_SCHEMA_VERSION = 2;
 
 /**
  * SQL schema for initializing the music archive database
@@ -28,7 +28,7 @@ const SCHEMA_SQL = `
     name TEXT NOT NULL,
     artist_id INTEGER NOT NULL,
     music_brainz_id TEXT UNIQUE NOT NULL,
-    music_brainz_release_group_id TEXT UNIQUE NOT NULL,
+    music_brainz_release_group_id TEXT NOT NULL,
     release_year INTEGER,
     archive_status TEXT DEFAULT 'NOT_ARCHIVED' CHECK(archive_status IN ('PARTIALLY_ARCHIVED', 'NOT_ARCHIVED', 'ARCHIVED', 'VIDEO_NOT_FOUND', 'ARCHIVING_FAILURE')),
     FOREIGN KEY (artist_id) REFERENCES Artist(id) ON DELETE CASCADE
@@ -44,7 +44,7 @@ const SCHEMA_SQL = `
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     album_id INTEGER NOT NULL,
-    music_brainz_id TEXT UNIQUE NOT NULL,
+    music_brainz_id TEXT,
     track_number INTEGER,
     duration INTEGER,
     archived_file_duration INTEGER,
@@ -52,7 +52,8 @@ const SCHEMA_SQL = `
     archive_status TEXT DEFAULT 'NOT_ARCHIVED' CHECK(archive_status IN ('PARTIALLY_ARCHIVED', 'NOT_ARCHIVED', 'ARCHIVED', 'VIDEO_NOT_FOUND', 'ARCHIVING_FAILURE')) NOT NULL,
     archived_file INTEGER,
     FOREIGN KEY (album_id) REFERENCES Album(id) ON DELETE CASCADE,
-    FOREIGN KEY (archived_file) REFERENCES File_Document(id) ON DELETE SET NULL
+    FOREIGN KEY (archived_file) REFERENCES File_Document(id) ON DELETE SET NULL,
+    UNIQUE(album_id, music_brainz_id)
   );
 
   CREATE TABLE IF NOT EXISTS recent_artist_searches (
@@ -64,6 +65,7 @@ const SCHEMA_SQL = `
   CREATE INDEX IF NOT EXISTS idx_album_artist ON Album(artist_id);
   CREATE INDEX IF NOT EXISTS idx_song_album ON Song(album_id);
   CREATE INDEX IF NOT EXISTS idx_album_status ON Album(archive_status);
+  CREATE INDEX IF NOT EXISTS idx_album_release_group ON Album(music_brainz_release_group_id);
   CREATE INDEX IF NOT EXISTS idx_recent_searches_date ON recent_artist_searches(searched_at DESC);
 `;
 
@@ -171,14 +173,88 @@ export class DatabaseInitializer {
   private migrate(fromVersion: number, toVersion: number): void {
     if (!this.db) return;
     
-    // Add migration logic here for future schema changes
-    // Example:
-    // if (fromVersion === 1 && toVersion === 2) {
-    //   this.db.exec('ALTER TABLE ...');
-    // }
+    // Apply sequential migrations
+    for (let version = fromVersion; version < toVersion; version++) {
+      console.debug(`Applying migration: v${version} → v${version + 1}`);
+      this.applyMigration(version, version + 1);
+    }
     
     this.setSchemaVersion(toVersion);
     console.debug("Migration completed: v" + fromVersion + " → v" + toVersion);
+  }
+
+  /**
+   * Apply a single migration step.
+   * SQLite does not support ALTER TABLE DROP CONSTRAINT, so we rebuild the table.
+   *
+   * IMPORTANT: Foreign keys MUST be disabled around any DROP TABLE statement.
+   * SQLite's DROP TABLE fires ON DELETE CASCADE on child tables when
+   * foreign_keys pragma is ON, which would wipe related data before the
+   * INSERT INTO … SELECT * FROM … copy has run.
+   */
+  private applyMigration(from: number, to: number): void {
+    if (!this.db) return;
+    
+    if (from === 1 && to === 2) {
+      // v1 → v2: Remove UNIQUE constraint from Album.music_brainz_release_group_id
+      // to allow multiple releases (editions) from the same release-group.
+      // Also change Song.music_brainz_id from globally UNIQUE to per-album unique,
+      // since different album editions can share the same recordings.
+
+      // Disable FK enforcement so that DROP TABLE does not cascade to child rows.
+      this.db.pragma('foreign_keys = OFF');
+      try {
+        this.db.exec(`
+          CREATE TABLE IF NOT EXISTS Album_new (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            artist_id INTEGER NOT NULL,
+            music_brainz_id TEXT UNIQUE NOT NULL,
+            music_brainz_release_group_id TEXT NOT NULL,
+            release_year INTEGER,
+            archive_status TEXT DEFAULT 'NOT_ARCHIVED' CHECK(archive_status IN ('PARTIALLY_ARCHIVED', 'NOT_ARCHIVED', 'ARCHIVED', 'VIDEO_NOT_FOUND', 'ARCHIVING_FAILURE')),
+            FOREIGN KEY (artist_id) REFERENCES Artist(id) ON DELETE CASCADE
+          );
+
+          INSERT INTO Album_new SELECT * FROM Album;
+          DROP TABLE Album;
+          ALTER TABLE Album_new RENAME TO Album;
+
+          CREATE INDEX IF NOT EXISTS idx_album_artist ON Album(artist_id);
+          CREATE INDEX IF NOT EXISTS idx_album_status ON Album(archive_status);
+          CREATE INDEX IF NOT EXISTS idx_album_release_group ON Album(music_brainz_release_group_id);
+
+          CREATE TABLE IF NOT EXISTS Song_new (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            album_id INTEGER NOT NULL,
+            music_brainz_id TEXT,
+            track_number INTEGER,
+            duration INTEGER,
+            archived_file_duration INTEGER,
+            video_url TEXT,
+            archive_status TEXT DEFAULT 'NOT_ARCHIVED' CHECK(archive_status IN ('PARTIALLY_ARCHIVED', 'NOT_ARCHIVED', 'ARCHIVED', 'VIDEO_NOT_FOUND', 'ARCHIVING_FAILURE')) NOT NULL,
+            archived_file INTEGER,
+            FOREIGN KEY (album_id) REFERENCES Album(id) ON DELETE CASCADE,
+            FOREIGN KEY (archived_file) REFERENCES File_Document(id) ON DELETE SET NULL,
+            UNIQUE(album_id, music_brainz_id)
+          );
+
+          INSERT INTO Song_new SELECT * FROM Song;
+          DROP TABLE Song;
+          ALTER TABLE Song_new RENAME TO Song;
+
+          CREATE INDEX IF NOT EXISTS idx_song_album ON Song(album_id);
+        `);
+      } finally {
+        // Always re-enable FK enforcement even if the migration SQL fails.
+        this.db.pragma('foreign_keys = ON');
+      }
+      console.debug('Migration v1→v2: Updated Album and Song constraints for multi-edition support');
+      return;
+    }
+
+    console.warn(`No migration handler for v${from} → v${to}`);
   }
 
   /**

@@ -17,10 +17,16 @@ export class VideoUrlDialogComponent implements OnChanges {
   @Input() isAlreadyArchived: boolean = false;
   @Input() currentVideoUrl: string = '';
   @Output() urlSubmitted = new EventEmitter<string>();
+  @Output() urlRemoved = new EventEmitter<void>();
   @Output() cancelled = new EventEmitter<void>();
 
   videoUrl: string = '';
   error: string = '';
+
+  /** Whether the song currently has a video URL that can be removed */
+  get hasExistingUrl(): boolean {
+    return !!this.currentVideoUrl;
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     // When dialog becomes visible, initialize videoUrl with current URL
@@ -57,6 +63,11 @@ export class VideoUrlDialogComponent implements OnChanges {
 
   onCancel(): void {
     this.cancelled.emit();
+    this.reset();
+  }
+
+  onRemoveUrl(): void {
+    this.urlRemoved.emit();
     this.reset();
   }
 

@@ -30,11 +30,47 @@ export class ArchiveManager {
   private intervalId: NodeJS.Timeout | null = null;
   private shouldStop: boolean = false;
 
+  /**
+   * Error rate tracking: if too many consecutive errors occur in a short window,
+   * the process is automatically stopped to prevent runaway failures.
+   */
+  private static readonly MAX_CONSECUTIVE_ERRORS = 10; // Max errors before auto-stopping
+  private static readonly ERROR_WINDOW_MS = 120_000; // 2 minutes
+  private recentErrors: number[] = [];
+
   constructor(db: DatabaseManager, fileUtils: FileUtils, pluginManager: PluginManager) {
     this.db = db;
     this.fileUtils = fileUtils;
     this.pluginManager = pluginManager;
     console.debug('ArchiveManager initialized with plugin support');
+  }
+
+  /**
+   * Record a song-level error and check if the error rate has been exceeded.
+   * Returns true if the process should be stopped due to excessive errors.
+   */
+  private recordErrorAndCheckThreshold(): boolean {
+    const now = Date.now();
+    this.recentErrors.push(now);
+
+    // Prune errors outside the time window
+    this.recentErrors = this.recentErrors.filter(
+      ts => (now - ts) < ArchiveManager.ERROR_WINDOW_MS
+    );
+
+    if (this.recentErrors.length >= ArchiveManager.MAX_CONSECUTIVE_ERRORS) {
+      console.error(
+        `Error threshold exceeded: ${this.recentErrors.length} errors in ` +
+        `${ArchiveManager.ERROR_WINDOW_MS / 1000}s window`
+      );
+      return true;
+    }
+    return false;
+  }
+
+  /** Reset error tracking (e.g. on process start or after a successful archive) */
+  private resetErrorTracking(): void {
+    this.recentErrors = [];
   }
 
   /**
@@ -194,6 +230,7 @@ export class ArchiveManager {
 
     this.isArchiveProcessActive = true;
     this.shouldStop = false;
+    this.resetErrorTracking();
 
     // Run immediately on start
     this.processArchiveQueue();
@@ -447,6 +484,15 @@ export class ArchiveManager {
       } catch (error) {
         console.error("Error archiving song " + song.id + ":", error);
         NotificationManager.error('archive_failed');
+
+        // Check if error rate threshold is exceeded
+        if (this.recordErrorAndCheckThreshold()) {
+          await this.stopBackgroundProcessDueToError(
+            'Too many archive errors in a short period',
+            'archive_error_rate_exceeded'
+          );
+          return;
+        }
       }
     }
 
@@ -620,6 +666,9 @@ export class ArchiveManager {
       });
 
       console.debug("Successfully archived: " + song.name);
+      
+      // Reset error tracking on successful archive
+      this.resetErrorTracking();
 
     } catch (error) {
       console.error("Failed to archive song " + song.id + ":", error);

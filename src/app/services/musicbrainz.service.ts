@@ -6,6 +6,7 @@ import {
   MusicBrainzAlbumDetails,
   MusicBrainzRelease
 } from './models/musicbranz.model';
+import { ReleaseGroupSearchOptions } from '../electron.d';
 
 
 @Injectable({
@@ -19,8 +20,8 @@ export class MusicbrainzService {
     return from(window.electronMusicBrainzAPI.searchArtist(artistName, limit));
   }
 
-  getAlbumsByArtist(artistId: string, limit: number = 100): Observable<MusicBrainzAlbumSearchResult> {
-    return from(window.electronMusicBrainzAPI.getAlbumsByArtist(artistId, limit));
+  getAlbumsByArtist(artistId: string, limit: number = 100, options?: ReleaseGroupSearchOptions): Observable<MusicBrainzAlbumSearchResult> {
+    return from(window.electronMusicBrainzAPI.getAlbumsByArtist(artistId, limit, options));
   }
 
   getAlbumDetails(albumId: string): Observable<MusicBrainzAlbumDetails> {

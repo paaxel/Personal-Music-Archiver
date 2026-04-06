@@ -36,7 +36,12 @@
     "recentSearches": "Ricerche Recenti",
     "clearHistory": "Cancella",
     "newestFirst": "Più Recenti",
-    "oldestFirst": "Più Vecchi"
+    "oldestFirst": "Più Vecchi",
+    "filters": "Filtri",
+    "releaseTypes": "Includi tipi di rilascio",
+    "excludeTypes": "Escludi tipi secondari",
+    "applyFilters": "Applica Filtri",
+    "edition": "Edizione"
   },
   "archives": {
     "title": "Album Archiviati",
@@ -87,6 +92,8 @@
     "play": "Riproduci",
     "pause": "Pausa",
     "stop": "Stop",
+    "next": "Traccia Successiva",
+    "previous": "Traccia Precedente",
     "openFolder": "Apri Cartella",
     "nowPlaying": "In Riproduzione"
   },
@@ -119,7 +126,8 @@
       "title": "Aggiungi URL Video",
       "label": "URL Video",
       "placeholder": "https://www.example.com/video/...",
-      "hint": "Inserisci l'URL del video per questa canzone (YouTube, Vimeo, ecc.)"
+      "hint": "Inserisci l'URL del video per questa canzone (YouTube, Vimeo, ecc.)",
+      "removeUrl": "Rimuovi URL"
     },
     "fileUpload": {
       "title": "Carica File MP3",
@@ -205,6 +213,7 @@
     "upload_failed": "Caricamento fallito",
     "invalid_file": "File non valido",
     "archive_failed": "Archiviazione fallita",
+    "archive_error_rate_exceeded": "Processo di archiviazione interrotto: troppi errori in poco tempo. Controlla il plugin o gli URL delle canzoni.",
     "album_delete_failed": "Eliminazione fallita",
     "album_delete_partial": "Alcuni file non sono stati eliminati",
     "plugin_install_failed": "Installazione plugin fallita",

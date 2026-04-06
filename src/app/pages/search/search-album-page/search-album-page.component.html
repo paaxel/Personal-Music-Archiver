@@ -20,6 +20,23 @@
           <p class="album-artist-name artist-link" (click)="onArtistNameClick()">{{ artist?.name }}</p>
           <p class="album-release-date">{{ getReleaseYear() }}</p>
           
+          <!-- Edition selector when multiple releases exist -->
+          <div class="edition-selector" *ngIf="hasMultipleEditions">
+            <label class="edition-label">{{ 'search.edition' | translate }}:</label>
+            <select 
+              class="edition-select"
+              [value]="selectedReleaseIndex"
+              (change)="onSelectRelease(+$any($event.target).value)"
+            >
+              <option 
+                *ngFor="let release of availableReleases; let i = index"
+                [value]="i"
+              >
+                {{ getReleaseLabel(release, i) }}
+              </option>
+            </select>
+          </div>
+
           <!-- Download Status Message -->
           <div class="download-status" *ngIf="existingAlbum">
             <span class="status-icon">✓</span>
@@ -52,7 +69,10 @@
               class="track-item"
             >
               <span class="track-number">{{ track.position }}</span>
-              <span class="track-title">{{ track.title }}</span>
+              <span class="track-title">
+                {{ track.title }}
+                <span class="track-artist-credit" *ngIf="getTrackArtistCredit(track) as credit">{{ credit }}</span>
+              </span>
               <span class="track-duration">{{ getTrackDuration(track.length) }}</span>
             </div>
           </div>

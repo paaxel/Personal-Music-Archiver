@@ -11,6 +11,18 @@ export interface MusicBrainzArtistSearchResult {
   count: number;
 }
 
+export interface MusicBrainzArtistCredit {
+  name: string;
+  joinphrase?: string;
+  artist: {
+    id: string;
+    name: string;
+    'sort-name': string;
+    type?: string;
+    disambiguation?: string;
+  };
+}
+
 export interface MusicBrainzAlbum {
   id: string;
   title: string;
@@ -21,6 +33,7 @@ export interface MusicBrainzAlbum {
     id: string;
     'primary-type'?: string;
   };
+  'artist-credit'?: MusicBrainzArtistCredit[];
   'track-count'?: number;
 }
 
@@ -29,6 +42,8 @@ export interface MusicBrainzRelease {
   title: string;
   date?: string;
   status?: string;
+  disambiguation?: string;
+  country?: string;
 }
 
 export interface MusicBrainzAlbumSearchResult {
@@ -41,19 +56,23 @@ export interface MusicBrainzRecording {
   id: string;
   title: string;
   length?: number;
+  'artist-credit'?: MusicBrainzArtistCredit[];
 }
 
 export interface MusicBrainzAlbumDetails {
   id: string;
   title: string;
   date?: string;
-  releaseGroupId?: string; // Release-group ID
+  disambiguation?: string;
+  releaseGroupId?: string;
+  'artist-credit'?: MusicBrainzArtistCredit[];
   media: Array<{
     tracks: Array<{
       id: string;
       title: string;
       position: number;
       length?: number;
+      'artist-credit'?: MusicBrainzArtistCredit[];
       recording: MusicBrainzRecording;
     }>;
   }>;

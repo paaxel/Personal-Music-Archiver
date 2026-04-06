@@ -10,9 +10,47 @@
   <div class="albums-section">
     <div class="section-header">
       <h2>{{ 'search.albumsBy' | translate }} {{ artist?.name }}</h2>
-      <button class="sort-button" (click)="toggleSort()" *ngIf="artistAlbums.length > 0">
-        <span *ngIf="searchAlbumsService.sortDescending">↓ {{ 'search.newestFirst' | translate }}</span>
-        <span *ngIf="!searchAlbumsService.sortDescending">↑ {{ 'search.oldestFirst' | translate }}</span>
+      <div class="header-actions">
+        <button class="filter-button" (click)="toggleSearchFilters()" [class.active]="showSearchFilters">
+          🔧 {{ 'search.filters' | translate }}
+        </button>
+        <button class="sort-button" (click)="toggleSort()" *ngIf="artistAlbums.length > 0">
+          <span *ngIf="searchAlbumsService.sortDescending">↓ {{ 'search.newestFirst' | translate }}</span>
+          <span *ngIf="!searchAlbumsService.sortDescending">↑ {{ 'search.oldestFirst' | translate }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Search Filters Panel -->
+    <div class="search-filters" *ngIf="showSearchFilters">
+      <div class="filter-group">
+        <label class="filter-label">{{ 'search.releaseTypes' | translate }}</label>
+        <div class="filter-chips">
+          <button 
+            *ngFor="let type of availablePrimaryTypes"
+            class="filter-chip"
+            [class.selected]="isPrimaryTypeSelected(type)"
+            (click)="togglePrimaryType(type)"
+          >
+            {{ type }}
+          </button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">{{ 'search.excludeTypes' | translate }}</label>
+        <div class="filter-chips">
+          <button 
+            *ngFor="let type of availableSecondaryTypes"
+            class="filter-chip exclude"
+            [class.selected]="isSecondaryTypeExcluded(type)"
+            (click)="toggleExcludeSecondaryType(type)"
+          >
+            {{ type }}
+          </button>
+        </div>
+      </div>
+      <button class="apply-filters-btn" (click)="applySearchFilters()">
+        {{ 'search.applyFilters' | translate }}
       </button>
     </div>
 
