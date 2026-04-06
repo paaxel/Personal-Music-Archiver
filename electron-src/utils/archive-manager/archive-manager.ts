@@ -146,7 +146,7 @@ export class ArchiveManager {
       }
     });
 
-    if (depCheck!=null) {
+    if (depCheck != null) {
       // Also update plugin dependency status so the plugins page can reflect the error
       await this.updatePluginDependencyStatus(depCheck);
     }
@@ -235,7 +235,7 @@ export class ArchiveManager {
         type: 'archive-process-status',
         data: { isActive: false }
       });
-    }else{
+    } else {
       console.debug('Currently processing - will stop after current archive completes');
     }
   }
@@ -429,6 +429,16 @@ export class ArchiveManager {
             currentSong: song.name
           } as AlbumArchiveProgress
         });
+        
+        let newStatus = this.db.updateAlbumArchiveProgress(album.id!)
+        
+        EventsManager.sendNotification({
+          type: 'album-status-changed',
+          data: {
+            albumId: album.id!,
+            status: newStatus
+          } as AlbumStatusUpdate
+        });
 
         if (this.shouldStop) {
           console.debug('Stop requested - current archive finished, stopping now');
@@ -444,25 +454,26 @@ export class ArchiveManager {
     const finalCompletedSongs = finalSongs.filter(s => s.archive_status === 'ARCHIVED');
 
     EventsManager.sendNotification({
-        type: 'album-archive-complete',
-        data: {
-          albumId: album.id!,
-          albumName: album.name,
-          artistName: artist.name,
-          totalTracks: finalSongs.length,
-          completedTracks: finalCompletedSongs.length,
-          status: finalCompletedSongs.length === finalSongs.length ? 'completed':'error'
-        } as AlbumArchiveComplete
-      });
+      type: 'album-archive-complete',
+      data: {
+        albumId: album.id!,
+        albumName: album.name,
+        artistName: artist.name,
+        totalTracks: finalSongs.length,
+        completedTracks: finalCompletedSongs.length,
+        status: finalCompletedSongs.length === finalSongs.length ? 'completed' : 'error'
+      } as AlbumArchiveComplete
+    });
 
-        EventsManager.sendNotification({
-        type: 'album-status-changed',
-        data: {
-          albumId: album.id!,
-          status: finalCompletedSongs.length === finalSongs.length ? 'ARCHIVED':'ARCHIVING_FAILURE'
-        } as AlbumStatusUpdate
-      });
-    
+    let newStatus = this.db.updateAlbumArchiveProgress(album.id!)
+        
+    EventsManager.sendNotification({
+      type: 'album-status-changed',
+      data: {
+        albumId: album.id!,
+        status: newStatus
+      } as AlbumStatusUpdate
+    });
   }
 
   /**
@@ -561,7 +572,7 @@ export class ArchiveManager {
         };
 
         const success = NodeID3.write(tags, downloadResult.path);
-        
+
         if (success) {
           console.debug('Metadata written successfully');
         } else {
@@ -592,7 +603,7 @@ export class ArchiveManager {
       // Update song status and archived duration
       this.db.updateSongFile(song.id!, fileId);
       this.db.updateSongArchiveStatus(song.id!, 'ARCHIVED', fileId);
-      if( actualDuration !== null ){
+      if (actualDuration !== null) {
         this.db.updateSongArchivedDuration(song.id!, actualDuration);
       }
 

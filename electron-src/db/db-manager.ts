@@ -625,36 +625,40 @@ export class DatabaseManager {
     /**
      * Update album archive progress (public method for DownloadManager)
      */
-    updateAlbumArchiveProgress(albumId: number): void {
+    updateAlbumArchiveProgress(albumId: number): string {
         // Get all songs for this album
         const songs = this.getSongsByAlbum(albumId);
 
         if (songs.length === 0) return;
 
-        const completedCount = songs.filter(s => s.archive_status === 'ARCHIVED').length;
+        const correctlyArchived = songs.filter(s => s.archive_status === 'ARCHIVED').length;
         const failedCount = songs.filter(s =>
             s.archive_status === 'VIDEO_NOT_FOUND' ||
             s.archive_status === 'ARCHIVING_FAILURE'
         ).length;
-        const totalProcessed = completedCount + failedCount;
 
-        let status: ArchiveStatus;
-        if (completedCount === 0) {
-            status = 'NOT_ARCHIVED';
-        } else if (completedCount === songs.length) {
-            status = 'ARCHIVED';
-        } else if (totalProcessed === songs.length) {
-            if (failedCount > 0) {
-                status = 'ARCHIVING_FAILURE';
-            } else {
-                status = 'ARCHIVED';
-            }
-        } else {
-            status = 'PARTIALLY_ARCHIVED';
-        }
+        const status = this.computeArchiveStatus(correctlyArchived, songs.length, failedCount)
 
         const stmt = this.db.prepare('UPDATE Album SET archive_status = ? WHERE id = ?');
         stmt.run(status, albumId);
+
+        return status
+    }
+
+    computeArchiveStatus(correctlyArchived: number, totalSongs: number, totalError: number){
+        const totalProcessed = correctlyArchived + totalError;
+
+        if(totalProcessed==totalSongs){
+            if(totalError>0){
+                return 'ARCHIVING_FAILURE'
+            }
+            return 'ARCHIVED'
+        }else{
+            if(totalProcessed>0){
+                return 'PARTIALLY_ARCHIVED'
+            }
+            return 'NOT_ARCHIVED'
+        }
     }
 
     /**

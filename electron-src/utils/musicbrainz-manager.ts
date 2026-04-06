@@ -54,6 +54,7 @@ export class MusicBrainzManager {
     ipcMain.handle('mb-get-albums-by-artist', async (_event, artistId: string, limit: number = 100) => {
       return this.makeRequest('/release-group', {
         query: `arid:${artistId} AND primarytype:Album AND status:Official AND NOT secondarytype:Live AND NOT secondarytype:Compilation`,
+        //query: `arid:${artistId}`,
         fmt: 'json',
         limit: limit.toString()
       });
