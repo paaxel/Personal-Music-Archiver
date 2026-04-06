@@ -124,6 +124,41 @@
       font-size: 14px;
       color: var(--text-muted);
     }
+
+    .edition-selector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+
+      .edition-label {
+        font-size: 13px;
+        color: var(--text-tertiary);
+        white-space: nowrap;
+      }
+
+      .edition-select {
+        padding: 6px 12px;
+        font-size: 13px;
+        border: 1px solid var(--border-primary);
+        border-radius: var(--radius-md);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        cursor: pointer;
+        min-width: 200px;
+        transition: border-color var(--transition-fast);
+
+        &:hover {
+          border-color: var(--accent-primary);
+        }
+
+        &:focus {
+          outline: none;
+          border-color: var(--accent-primary);
+          box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb, 66, 133, 244), 0.15);
+        }
+      }
+    }
   }
 }
 
@@ -216,6 +251,13 @@
     .track-title {
       color: var(--text-primary);
       font-size: 14px;
+
+      .track-artist-credit {
+        display: block;
+        margin-top: 2px;
+        color: var(--text-muted);
+        font-size: 12px;
+      }
     }
 
     .track-duration {

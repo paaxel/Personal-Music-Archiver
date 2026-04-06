@@ -251,11 +251,21 @@ export class DatabaseManager {
     }
 
     /**
-     * Get album by MusicBrainz release group ID
+     * Get album by MusicBrainz release group ID.
+     * Returns the first match (for backward compatibility with existing album checks).
      */
     private getAlbumByReleaseGroupId(releaseGroupId: string): Album | undefined {
-        const stmt = this.db.prepare('SELECT * FROM Album WHERE music_brainz_release_group_id = ?');
+        const stmt = this.db.prepare('SELECT * FROM Album WHERE music_brainz_release_group_id = ? LIMIT 1');
         return stmt.get(releaseGroupId) as Album | undefined;
+    }
+
+    /**
+     * Get all albums belonging to a MusicBrainz release group.
+     * A release group can contain multiple editions of the same album.
+     */
+    private getAlbumsByReleaseGroupId(releaseGroupId: string): Album[] {
+        const stmt = this.db.prepare('SELECT * FROM Album WHERE music_brainz_release_group_id = ? ORDER BY release_year ASC');
+        return stmt.all(releaseGroupId) as Album[];
     }
 
     /**
@@ -311,16 +321,16 @@ export class DatabaseManager {
     // ============================================================================
 
     /**
-     * Add a new song or return existing one if music_brainz_id matches
+     * Add a new song or return existing one if same recording already exists in the same album
      */
     private addSong(song: SongInput): number {
-        // Check if song with this music_brainz_id already exists
+        // Check if song with this music_brainz_id already exists in the same album
         if (song.music_brainz_id) {
-            const findStmt = this.db.prepare('SELECT id FROM Song WHERE music_brainz_id = ?');
-            const existing = findStmt.get(song.music_brainz_id) as { id: number } | undefined;
+            const findStmt = this.db.prepare('SELECT id FROM Song WHERE music_brainz_id = ? AND album_id = ?');
+            const existing = findStmt.get(song.music_brainz_id, song.album_id) as { id: number } | undefined;
 
             if (existing) {
-                console.debug('Song already exists with music_brainz_id:', song.music_brainz_id, '- Skipping');
+                console.debug('Song already exists with music_brainz_id:', song.music_brainz_id, 'in album:', song.album_id, '- Skipping');
                 return existing.id;
             }
         }

@@ -121,7 +121,7 @@ export class MusicBrainzManager {
       const data = await this.makeRequest('/release', {
         'release-group': releaseGroupId,
         fmt: 'json',
-        limit: '1',
+        limit: '100',
         status: 'official'
       });
       return data.releases || [];

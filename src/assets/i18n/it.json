@@ -40,7 +40,8 @@
     "filters": "Filtri",
     "releaseTypes": "Includi tipi di rilascio",
     "excludeTypes": "Escludi tipi secondari",
-    "applyFilters": "Applica Filtri"
+    "applyFilters": "Applica Filtri",
+    "edition": "Edizione"
   },
   "archives": {
     "title": "Album Archiviati",

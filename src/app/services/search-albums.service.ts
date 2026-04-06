@@ -4,7 +4,7 @@ import { map, catchError } from 'rxjs/operators';
 import { Params, Router } from '@angular/router';
 import { MusicbrainzService } from './musicbrainz.service';
 import { DatabaseService } from './database.service';
-import { MusicBrainzArtist, MusicBrainzAlbum } from './models/musicbranz.model';
+import { MusicBrainzArtist, MusicBrainzAlbum, MusicBrainzArtistCredit } from './models/musicbranz.model';
 import { ResetableService } from '../resolvers/base/resetable-service.interface';
 import { ReleaseGroupSearchOptions } from '../electron.d';
 
@@ -105,22 +105,19 @@ export class SearchAlbumsService implements ResetableService {
   private loadAlbumsCall(): Observable<boolean> {
     return this.musicBrainzService.getAlbumsByArtist(this.artistId!, 100, this.searchOptions).pipe(
       map((result) => {
-        this.artistAlbums = result['release-groups'] || [];
+        const allAlbums = result['release-groups'] || [];
+        
+        // Filter out albums where the searched artist is not the primary artist
+        this.artistAlbums = allAlbums.filter((album: MusicBrainzAlbum) => {
+          if (!album['artist-credit'] || album['artist-credit'].length === 0) return true;
+          return album['artist-credit'][0].artist.id === this.artistId;
+        });
         
         // Sort albums by release date
         this.sortAlbums();
         
-        // Extract artist info from first album if available
-        if (this.artistAlbums.length > 0 && this.artistAlbums[0]['artist-credit']) {
-          const artistCredit = this.artistAlbums[0]['artist-credit'][0];
-          this.artist = {
-            id: artistCredit.artist.id,
-            name: artistCredit.name,
-            'sort-name': artistCredit.artist['sort-name'] || artistCredit.name,
-            type: artistCredit.artist.type || '',
-            disambiguation: artistCredit.artist.disambiguation || ''
-          };
-        }
+        // Extract artist info matching the searched artist ID
+        this.extractArtistFromCredits();
         
         return true;
       }),
@@ -128,6 +125,28 @@ export class SearchAlbumsService implements ResetableService {
         return throwError(() => err);
       })
     ) as Observable<boolean>;
+  }
+
+  /**
+   * Extract artist info from album credits, preferring the credit matching the searched artist ID.
+   */
+  private extractArtistFromCredits(): void {
+    for (const album of this.artistAlbums) {
+      if (!album['artist-credit'] || album['artist-credit'].length === 0) continue;
+
+      const matchingCredit = album['artist-credit'].find(
+        (credit: MusicBrainzArtistCredit) => credit.artist.id === this.artistId
+      ) || album['artist-credit'][0];
+
+      this.artist = {
+        id: matchingCredit.artist.id,
+        name: matchingCredit.name,
+        'sort-name': matchingCredit.artist['sort-name'] || matchingCredit.name,
+        type: matchingCredit.artist.type || '',
+        disambiguation: matchingCredit.artist.disambiguation || ''
+      };
+      return;
+    }
   }
 
   private checkExistingAlbums(): Observable<boolean> {

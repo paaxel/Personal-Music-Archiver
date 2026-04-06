@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { SearchAlbumService } from '../../../services/search-album.service';
+import { SearchAlbumsService } from '../../../services/search-albums.service';
 import { MusicbrainzService } from '../../../services/musicbrainz.service';
 import { DatabaseService } from '../../../services/database.service';
 import { LoaderService } from '../../../services/loader.service';
@@ -22,6 +23,7 @@ export class SearchAlbumPageComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     public searchAlbumService: SearchAlbumService,
+    private searchAlbumsService: SearchAlbumsService,
     private musicBrainzService: MusicbrainzService,
     private dbService: DatabaseService,
     private loaderService: LoaderService,
@@ -98,8 +100,8 @@ export class SearchAlbumPageComponent implements OnInit, OnDestroy {
                 console.debug('Album and songs added successfully');
                 this.isArchiving = false;
                 this.loaderService.hide();
-                // Reload existing album status
-                this.dbService.checkAlbumByReleaseGroup(this.searchAlbumService.releaseGroupId).subscribe({
+                // Reload existing album status by release ID
+                this.dbService.checkAlbumExists(this.album!.id).subscribe({
                   next: (existingAlbum) => {
                     this.searchAlbumService.existingAlbum = existingAlbum;
                     this.cdr.detectChanges();
@@ -144,6 +146,18 @@ export class SearchAlbumPageComponent implements OnInit, OnDestroy {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   }
 
+  getTrackArtistCredit(track: {
+    'artist-credit'?: Array<{ name: string; joinphrase?: string }>;
+    recording?: { 'artist-credit'?: Array<{ name: string; joinphrase?: string }> };
+  }): string | null {
+    const credits = track['artist-credit'] || track.recording?.['artist-credit'];
+    if (!credits || credits.length <= 1) {
+      return null;
+    }
+
+    return credits.map((credit) => credit.name + (credit.joinphrase || '')).join('');
+  }
+
   canArchive(): boolean {
     return !this.existingAlbum && !this.isArchiving && !!this.album;
   }
@@ -156,7 +170,12 @@ export class SearchAlbumPageComponent implements OnInit, OnDestroy {
   }
 
   backToAlbums(): void {
-    if (this.artist) {
+    // Use the original searched artist from SearchAlbumsService for correct back-navigation,
+    // avoiding redirection to a different artist when the album's primary artist differs.
+    const searchedArtist = this.searchAlbumsService.artist;
+    if (searchedArtist) {
+      this.router.navigate(['/search/albums', searchedArtist.id]);
+    } else if (this.artist) {
       this.router.navigate(['/search/albums', this.artist.id]);
     } else {
       this.backToArtists();
@@ -169,5 +188,46 @@ export class SearchAlbumPageComponent implements OnInit, OnDestroy {
 
   onArtistNameClick(): void {
     this.backToAlbums();
+  }
+
+  // ============================================================================
+  // Release edition selector
+  // ============================================================================
+
+  get availableReleases() {
+    return this.searchAlbumService.availableReleases;
+  }
+
+  get selectedReleaseIndex() {
+    return this.searchAlbumService.selectedReleaseIndex;
+  }
+
+  get hasMultipleEditions(): boolean {
+    return this.searchAlbumService.hasMultipleEditions();
+  }
+
+  onSelectRelease(index: number): void {
+    if (index === this.selectedReleaseIndex) return;
+
+    this.loaderService.show();
+    this.searchAlbumService.selectRelease(index).subscribe({
+      next: () => {
+        this.loaderService.hide();
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error switching release edition:', error);
+        this.loaderService.hide();
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  getReleaseLabel(release: any, index: number): string {
+    const parts: string[] = [];
+    if (release.date) parts.push(release.date);
+    if (release.country) parts.push(release.country);
+    if (release.disambiguation) parts.push(release.disambiguation);
+    return parts.length > 0 ? parts.join(' · ') : `Edition ${index + 1}`;
   }
 }
